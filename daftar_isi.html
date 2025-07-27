@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Isi</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">TUTORIAL DATABASE MANGROVE</div>
+        <div class="clock" id="clock">Loading time...</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar-left">
+            <div class="toc-title">DAFTAR ISI</div>
+            <ul class="toc-list" id="tocList">
+                <!-- Same TOC as main.html -->
+            </ul>
+        </div>
+        
+        <div class="content">
+            <h1 class="content-title">Daftar Isi Lengkap</h1>
+            
+            <div class="content-text">
+                <p>Berikut struktur lengkap tutorial pengelolaan database konservasi mangrove:</p>
+                
+                <div class="table-container">
+                    <table>
+                        <tr><th>Bab</th><th>Topik</th><th>Level</th><th>Halaman</th></tr>
+                        <tr>
+                            <td>-</td>
+                            <td>Sambutan Motivasi</td>
+                            <td>-</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>Pendahuluan</td>
+                            <td>-</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Mengimpor Data CSV</td>
+                            <td>Pemula</td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Membuat Tabel</td>
+                            <td>Pemula</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Memasukkan Data</td>
+                            <td>Pemula</td>
+                            <td>12</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Query SELECT Dasar</td>
+                            <td>Pemula</td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Filter dengan WHERE</td>
+                            <td>Pemula</td>
+                            <td>18</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Mengurutkan Data</td>
+                            <td>Pemula</td>
+                            <td>22</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Menggabungkan Tabel</td>
+                            <td>Menengah</td>
+                            <td>25</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Agregasi Data</td>
+                            <td>Menengah</td>
+                            <td>28</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Subquery</td>
+                            <td>Menengah</td>
+                            <td>32</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Membuat View</td>
+                            <td>Menengah</td>
+                            <td>35</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>Mengelola Index</td>
+                            <td>Lanjutan</td>
+                            <td>38</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>Constraint</td>
+                            <td>Lanjutan</td>
+                            <td>41</td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>Update dan Delete</td>
+                            <td>Lanjutan</td>
+                            <td>44</td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td>Stored Procedure</td>
+                            <td>Lanjutan</td>
+                            <td>47</td>
+                        </tr>
+                        <tr>
+                            <td>15</td>
+                            <td>Trigger</td>
+                            <td>Lanjutan</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td>16</td>
+                            <td>Transaksi</td>
+                            <td>Lanjutan</td>
+                            <td>53</td>
+                        </tr>
+                        <tr>
+                            <td>17</td>
+                            <td>Optimasi Query</td>
+                            <td>Lanjutan</td>
+                            <td>56</td>
+                        </tr>
+                        <tr>
+                            <td>18</td>
+                            <td>Keamanan Database</td>
+                            <td>Lanjutan</td>
+                            <td>59</td>
+                        </tr>
+                        <tr>
+                            <td>19</td>
+                            <td>Backup Data</td>
+                            <td>Lanjutan</td>
+                            <td>62</td>
+                        </tr>
+                        <tr>
+                            <td>20</td>
+                            <td>Integrasi Aplikasi</td>
+                            <td>Lanjutan</td>
+                            <td>65</td>
+                        </tr>
+                        <tr>
+                            <td>-</td>
+                            <td>Kesimpulan</td>
+                            <td>-</td>
+                            <td>68</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-subtitle">Peta Kompetensi</div>
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="color: #e74c3c;">Pemula</span>
+                        <span style="color: #f39c12;">Menengah</span>
+                        <span style="color: #27ae60;">Lanjutan</span>
+                    </div>
+                    <div style="height: 10px; background: linear-gradient(to right, #e74c3c, #f39c12, #27ae60); border-radius: 5px;"></div>
+                </div>
+            </div>
+            
+            <a href="pendahuluan.html" class="home-btn">← Pendahuluan</a>
+            <a href="prasyarat.html" class="home-btn">Prasyarat →</a>
+        </div>
+        
+        <div class="sidebar-right">
+            <div class="tips-title">CARA MENGGUNAKAN</div>
+            <div class="tips-item">
+                <h3>Pembelajaran Berurutan</h3>
+                <p>Untuk pemula, disarankan mengikuti urutan bab dari awal.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Pencarian Cepat</h3>
+                <p>Gunakan Ctrl+F untuk mencari istilah teknis spesifik.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Praktik Langsung</h3>
+                <p>Setiap contoh kode dapat langsung dicoba di VSCode.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

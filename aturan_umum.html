@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aturan Umum PostgreSQL</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">TUTORIAL DATABASE MANGROVE</div>
+        <div class="clock" id="clock">Loading time...</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar-left">
+            <div class="toc-title">DAFTAR ISI</div>
+            <ul class="toc-list" id="tocList">
+                <!-- Same TOC as main.html -->
+            </ul>
+        </div>
+        
+        <div class="content">
+            <h1 class="content-title">Aturan Umum PostgreSQL 17.5</h1>
+            
+            <div class="content-text">
+                <p>Berikut best practices dalam bekerja dengan PostgreSQL untuk konservasi mangrove:</p>
+                
+                <div class="content-subtitle">1. Pemilihan Tipe Data</div>
+                <div class="table-container">
+                    <table>
+                        <tr><th>Tipe Data</th><th>Contoh Penggunaan</th><th>Rekomendasi</th></tr>
+                        <tr>
+                            <td>VARCHAR</td>
+                            <td>ID, teks pendek</td>
+                            <td>Gunakan length sesuai kebutuhan (50-255)</td>
+                        </tr>
+                        <tr>
+                            <td>TEXT</td>
+                            <td>Deskripsi panjang</td>
+                            <td>Untuk teks tanpa batas panjang</td>
+                        </tr>
+                        <tr>
+                            <td>NUMERIC</td>
+                            <td>Luas area, koordinat</td>
+                            <td>Presisi tinggi untuk data geospasial</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-subtitle">2. Manajemen Indeks</div>
+                <div class="code-block">
+-- Contoh pembuatan indeks
+CREATE INDEX idx_location ON mangrove_conservation_records(location);
+
+-- Indeks komposit
+CREATE INDEX idx_location_date ON mangrove_conservation_records(location, date_recorded);
+                </div>
+                <p><strong>Aturan:</strong> Buat indeks pada kolom yang sering digunakan di WHERE, JOIN, atau ORDER BY, tetapi hindari over-indexing yang memperlambat operasi tulis.</p>
+                
+                <div class="content-subtitle">3. Keamanan Database</div>
+                <ul class="content-list">
+                    <li>Gunakan autentikasi <code>scram-sha-256</code> di <code>pg_hba.conf</code></li>
+                    <li>Batas akses remote dengan firewall</li>
+                    <li>Password minimal 12 karakter dengan kombinasi huruf, angka, simbol</li>
+                </ul>
+                
+                <div class="content-subtitle">4. Backup Rutin</div>
+                <div class="code-block">
+# Backup seluruh database
+pg_dump -U postgres -d test_db > backup_$(date +%Y%m%d).sql
+
+# Backup spesifik tabel
+pg_dump -U postgres -t mangrove_conservation_records test_db > mangrove_backup.sql
+                </div>
+                
+                <div class="content-subtitle">5. Optimasi Query</div>
+                <div class="code-block">
+-- Analisis performa query
+EXPLAIN ANALYZE SELECT * FROM mangrove_conservation_records WHERE location = 'Aceh Jaya';
+
+-- Hindari SELECT *
+SELECT conservation_id, location FROM mangrove_conservation_records;
+                </div>
+            </div>
+            
+            <a href="prasyarat.html" class="home-btn">← Prasyarat</a>
+            <a href="bab1.html" class="home-btn">Mulai Bab 1 →</a>
+        </div>
+        
+        <div class="sidebar-right">
+            <div class="tips-title">GOLDEN RULES</div>
+            <div class="tips-item">
+                <h3>Naming Convention</h3>
+                <p>Gunakan snake_case untuk nama tabel/kolom: <code>mangrove_conservation_records</code></p>
+            </div>
+            <div class="tips-item">
+                <h3>Documentation</h3>
+                <p>Buat komentar pada tabel dan kolom menggunakan <code>COMMENT ON</code></p>
+            </div>
+            <div class="tips-item">
+                <h3>Transaction</h3>
+                <p>Selalu gunakan BEGIN/COMMIT untuk operasi kritis</p>
+            </div>
+            <div class="tips-item">
+                <h3>Monitoring</h3>
+                <p>Pantau query lambat dengan <code>pg_stat_statements</code></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script>```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bab 15 - Tutorial Mangrove</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h2 class="header-title">TUTORIAL DATABASE</h2>
+        <div id="clock" class="clock">10:01:00 AM WIB pada Minggu, Juli 27, 2025</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar-left">
+            <h3 class="toc-title">DAFTAR ISI</h3>
+            <ul class="toc-list">
+                <li><a href="sambutan.html">Sambutan Motivasi</a></li>
+                <li><a href="pendahuluan.html">Pendahuluan</a></li>
+                <li><a href="daftar_isi.html">Daftar Isi</a></li>
+                <li><a href="prasyarat.html">Prasyarat</a></li>
+                <li><a href="aturan_umum.html">Aturan Umum</a></li>
+                <li>
+                    <button class="toggle-btn">+</button>
+                    <a href="#">Bab 1-5</a>
+                    <ul class="toc-sublist">
+                        <li><a href="bab1.html">Bab 1: Mengimpor Data CSV</a></li>
+                        <li><a href="bab2.html">Bab 2: Membuat Tabel</a></li>
+                        <li><a href="bab3.html">Bab 3: Memasukkan Data</a></li>
+                        <li><a href="bab4.html">Bab 4: Query SELECT Dasar</a></li>
+                        <li><a href="bab5.html">Bab 5: Memfilter Data</a></li>
+                    </ul>
+                </li>
+                <li><a href="bab6.html">Bab 6: Mengurutkan dan Membatasi Hasil</a></li>
+                <li><a href="bab7.html">Bab 7: Menggabungkan Tabel</a></li>
+                <li><a href="bab8.html">Bab 8: Agregasi Data</a></li>
+                <li><a href="bab9.html">Bab 9: Subquery</a></li>
+                <li><a href="bab10.html">Bab 10: Membuat View</a></li>
+                <li><a href="bab11.html">Bab 11: Mengelola Index</a></li>
+                <li><a href="bab12.html">Bab 12: Constraint</a></li>
+                <li><a href="bab13.html">Bab 13: Update dan Delete</a></li>
+                <li><a href="bab14.html">Bab 14: Stored Procedure</a></li>
+                <li><a href="bab15.html" class="active">Bab 15: Trigger</a></li>
+                <li><a href="bab16.html">Bab 16: Transaksi</a></li>
+                <li><a href="bab17.html">Bab 17: Optimasi Query</a></li>
+                <li><a href="bab18.html">Bab 18: Keamanan Database</a></li>
+                <li><a href="bab19.html">Bab 19: Backup Data</a></li>
+                <li><a href="bab20.html">Bab 20: Integrasi Aplikasi</a></li>
+                <li><a href="kesimpulan.html">Kesimpulan</a></li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <h1 class="content-title">Bab 15: Menggunakan Trigger untuk Integritas Data</h1>
+            <p class="content-text">
+                Pada bab ini, kita akan mempelajari cara membuat <code>TRIGGER</code> untuk mencatat perubahan data konservasi mangrove secara otomatis, seperti pembaruan kredit karbon, untuk menjaga jejak audit dalam sistem blockchain.
+            </p>
+
+            <h2 class="content-subtitle">Deskripsi Kasus</h2>
+            <p class="content-text">
+                Organisasi ingin mencatat setiap perubahan kredit karbon secara otomatis dalam tabel log untuk keperluan audit blockchain, memastikan semua pembaruan dapat dilacak dan diverifikasi.
+            </p>
+
+            <h2 class="content-subtitle">Langkah untuk Pemula</h2>
+            <h3>1. Buat Fungsi Trigger</h3>
+            <div class="code-block">
+                <pre>
+CREATE FUNCTION log_credit_changes()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO credit_change_log (conservation_id, old_credits, new_credits, change_date)
+    VALUES (OLD.conservation_id, OLD.carbon_credits, NEW.carbon_credits, NOW());
+    RETURN NEW;
+END;
+$$;
+                </pre>
+            </div>
+            <p class="content-text"><strong>Penjelasan Query:</strong></p>
+            <ul class="content-list">
+                <li><code>CREATE FUNCTION log_credit_changes</code> - Mendefinisikan fungsi trigger untuk mencatat perubahan.</li>
+                <li><code>RETURNS TRIGGER</code> - Menunjukkan fungsi digunakan sebagai trigger.</li>
+                <li><code>INSERT INTO credit_change_log</code> - Mencatat data lama (<code>OLD</code>) dan baru (<code>NEW</code>) ke tabel log.</li>
+            </ul>
+            <p class="content-text"><strong>Output Contoh:</strong></p>
+            <p class="content-text">
+                Fungsi <code>log_credit_changes</code> dibuat, siap digunakan oleh trigger.
+            </p>
+            <p class="content-text">
+                <strong>Analisis:</strong> Fungsi ini mempersiapkan logika untuk mencatat perubahan kredit karbon, mendukung jejak audit blockchain.
+            </p>
+
+            <h3>2. Buat Trigger</h3>
+            <div class="code-block">
+                <pre>
+CREATE TABLE credit_change_log (
+    log_id SERIAL PRIMARY KEY,
+    conservation_id VARCHAR(50),
+    old_credits INTEGER,
+    new_credits INTEGER,
+    change_date TIMESTAMP
+);
+CREATE TRIGGER credit_update_trigger
+AFTER UPDATE OF carbon_credits ON mangrove_conservation_records
+FOR EACH ROW
+EXECUTE FUNCTION log_credit_changes();
+                </pre>
+            </div>
+            <p class="content-text"><strong>Penjelasan Query:</strong></p>
+            <ul class="content-list">
+                <li><code>CREATE TABLE credit_change_log</code> - Membuat tabel untuk menyimpan log perubahan.</li>
+                <li><code>CREATE TRIGGER credit_update_trigger</code> - Mendefinisikan trigger yang dijalankan setelah pembaruan kolom <code>carbon_credits</code>.</li>
+                <li><code>FOR EACH ROW EXECUTE FUNCTION</code> - Menjalankan fungsi <code>log_credit_changes</code> untuk setiap baris yang diperbarui.</li>
+            </ul>
+            <p class="content-text"><strong>Output Contoh:</strong></p>
+            <p class="content-text">
+                Tabel <code>credit_change_log</code> dan trigger <code>credit_update_trigger</code> dibuat. Contoh log setelah pembaruan:
+            </p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>log_id</th>
+                            <th>conservation_id</th>
+                            <th>old_credits</th>
+                            <th>new_credits</th>
+                            <th>change_date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>C001</td>
+                            <td>250</td>
+                            <td>300</td>
+                            <td>2025-07-27 10:00:00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="content-text">
+                <strong>Analisis:</strong> Trigger otomatis mencatat setiap pembaruan kredit karbon, mendukung pelacakan perubahan untuk audit blockchain.
+            </p>
+
+            <h2 class="content-subtitle">Untuk Pengguna Menengah</h2>
+            <h3>Logika Kondisional</h3>
+            <div class="code-block">
+                <pre>
+CREATE OR REPLACE FUNCTION log_credit_changes()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF OLD.carbon_credits != NEW.carbon_credits THEN
+        INSERT INTO credit_change_log (conservation_id, old_credits, new_credits, change_date)
+        VALUES (OLD.conservation_id, OLD.carbon_credits, NEW.carbon_credits, NOW());
+    END IF;
+    RETURN NEW;
+END;
+$$;
+                </pre>
+            </div>
+            <p class="content-text"><strong>Penjelasan Query:</strong></p>
+            <ul class="content-list">
+                <li><code>CREATE OR REPLACE FUNCTION</code> - Mengganti fungsi trigger jika sudah ada.</li>
+                <li><code>IF OLD.carbon_credits != NEW.carbon_credits THEN</code> - Hanya mencatat jika kredit karbon berubah.</li>
+                <li><code>INSERT INTO credit_change_log</code> - Mencatat perubahan yang relevan.</li>
+            </ul>
+            <p class="content-text"><strong>Output Contoh:</strong></p>
+            <p class="content-text">
+                Fungsi diperbarui, log hanya dibuat untuk perubahan aktual, mengurangi entri yang tidak perlu.
+            </p>
+            <p class="content-text">
+                <strong>Analisis:</strong> Logika kondisional mengoptimalkan penyimpanan log, memastikan hanya perubahan relevan yang dicatat untuk audit blockchain.
+            </p>
+
+            <h2 class="content-subtitle">Untuk Pengguna Tingkat Lanjutan</h2>
+            <h3>Trigger Statement-Level</h3>
+            <div class="code-block">
+                <pre>
+CREATE FUNCTION log_batch_updates()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO credit_change_log (conservation_id, old_credits, new_credits, change_date)
+    SELECT OLD_TABLE.conservation_id, OLD_TABLE.carbon_credits, NEW_TABLE.carbon_credits, NOW()
+    FROM OLD_TABLE, NEW_TABLE
+    WHERE OLD_TABLE.conservation_id = NEW_TABLE.conservation_id;
+    RETURN NULL;
+END;
+$$;
+
+CREATE TRIGGER credit_batch_trigger
+AFTER UPDATE OF carbon_credits ON mangrove_conservation_records
+REFERENCING OLD TABLE AS OLD_TABLE NEW TABLE AS NEW_TABLE
+FOR EACH STATEMENT
+EXECUTE FUNCTION log_batch_updates();
+                </pre>
+            </div>
+            <p class="content-text"><strong>Penjelasan Query:</strong></p>
+            <ul class="content-list">
+                <li><code>CREATE FUNCTION log_batch_updates</code> - Fungsi untuk trigger statement-level.</li>
+                <li><code>INSERT ... SELECT FROM OLD_TABLE, NEW_TABLE</code> - Mencatat semua baris yang terpengaruh dalam satu operasi.</li>
+                <li><code>CREATE TRIGGER ... FOR EACH STATEMENT</code> - Trigger dijalankan sekali untuk seluruh pernyataan pembaruan.</li>
+            </ul>
+            <p class="content-text"><strong>Output Contoh:</strong></p>
+            <p class="content-text">
+                Fungsi dan trigger dibuat, mencatat pembaruan massal dalam tabel log, misalnya setelah:
+            </p>
+            <div class="code-block">
+                <pre>
+UPDATE mangrove_conservation_records
+SET carbon_credits = carbon_credits + 50
+WHERE location = 'Aceh Jaya';
+                </pre>
+            </div>
+            <p class="content-text">
+                <strong>Analisis:</strong> Trigger statement-level cocok untuk pembaruan massal, mendukung audit blockchain skala besar dengan efisiensi tinggi.
+            </p>
+
+            <a href="bab14.html" class="home-btn">← Kembali ke Bab 14</a>
+            <a href="bab16.html" class="home-btn">Lanjut ke Bab 16 →</a>
+        </main>
+
+        <aside class="sidebar-right">
+            <h3 class="tips-title">TIPS BAB 15</h3>
+            <div class="tips-item">
+                <h3>Gunakan Trigger untuk Audit</h3>
+                <p>Buat trigger untuk mencatat perubahan data secara otomatis, memastikan jejak audit untuk sistem blockchain.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Optimalkan dengan Logika Kondisional</h3>
+                <p>Tambahkan kondisi dalam fungsi trigger untuk menghindari log yang tidak perlu, menghemat ruang penyimpanan.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Pilih Trigger Level dengan Tepat</h3>
+                <p>Gunakan trigger row-level untuk perubahan spesifik dan statement-level untuk pembaruan massal agar lebih efisien.</p>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </footer>
+</body>
+</html>
+```

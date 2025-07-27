@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prasyarat</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">TUTORIAL DATABASE MANGROVE</div>
+        <div class="clock" id="clock">Loading time...</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar-left">
+            <div class="toc-title">DAFTAR ISI</div>
+            <ul class="toc-list" id="tocList">
+                <!-- Same TOC as main.html -->
+            </ul>
+        </div>
+        
+        <div class="content">
+            <h1 class="content-title">Prasyarat Sistem</h1>
+            
+            <div class="content-text">
+                <p>Berikut kebutuhan sistem dan persiapan sebelum memulai tutorial:</p>
+                
+                <div class="content-subtitle">Kebutuhan Perangkat Lunak</div>
+                <div class="table-container">
+                    <table>
+                        <tr><th>Komponen</th><th>Versi</th><th>Deskripsi</th></tr>
+                        <tr>
+                            <td>PostgreSQL</td>
+                            <td>17.5</td>
+                            <td>Database server utama</td>
+                        </tr>
+                        <tr>
+                            <td>Windows</td>
+                            <td>11</td>
+                            <td>Sistem operasi (64-bit)</td>
+                        </tr>
+                        <tr>
+                            <td>VSCode</td>
+                            <td>Terbaru</td>
+                            <td>Editor kode dengan ekstensi PostgreSQL</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-subtitle">Konfigurasi Database</div>
+                <div class="code-block">
+Host: localhost
+Port: 5432
+User: postgres
+Password: P@ssw0rd123!
+Database: test_db
+                </div>
+                
+                <div class="content-subtitle">Instalasi Ekstensi VSCode</div>
+                <ol class="content-list">
+                    <li>Buka VSCode, tekan <kbd>Ctrl+Shift+X</kbd></li>
+                    <li>Cari "PostgreSQL" (oleh Chris Kolkman)</li>
+                    <li>Klik Install</li>
+                    <li>Konfigurasi koneksi dengan detail di atas</li>
+                </ol>
+                
+                <div class="content-subtitle">Struktur File CSV</div>
+                <p>File harus tersedia di <code>C:\data\</code> dengan format:</p>
+                <div class="code-block">
+conservation_id,location,area_ha,carbon_credits,date_recorded
+C001,Aceh Jaya,50,250,2024-01-15
+                </div>
+            </div>
+            
+            <a href="daftar_isi.html" class="home-btn">← Daftar Isi</a>
+            <a href="aturan_umum.html" class="home-btn">Aturan Umum →</a>
+        </div>
+        
+        <div class="sidebar-right">
+            <div class="tips-title">PERSIAPAN AWAL</div>
+            <div class="tips-item">
+                <h3>Verifikasi Instalasi</h3>
+                <p>Jalankan <code>SELECT version();</code> untuk memastikan PostgreSQL 17.5 terinstal.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Alternatif SQLTools</h3>
+                <p>Jika ekstensi utama bermasalah, gunakan SQLTools oleh Matheus Teixeira.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Folder Data</h3>
+                <p>Buat folder <code>C:\data\</code> dan pastikan PostgreSQL memiliki akses baca.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

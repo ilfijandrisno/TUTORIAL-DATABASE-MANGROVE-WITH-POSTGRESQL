@@ -1,0 +1,203 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script>```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bab 19 - Tutorial Mangrove</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h2 class="header-title">TUTORIAL DATABASE</h2>
+        <div id="clock" class="clock">10:44:00 AM WIB pada Minggu, Juli 27, 2025</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar-left">
+            <h3 class="toc-title">DAFTAR ISI</h3>
+            <ul class="toc-list">
+                <li><a href="sambutan.html">Sambutan Motivasi</a></li>
+                <li><a href="pendahuluan.html">Pendahuluan</a></li>
+                <li><a href="daftar_isi.html">Daftar Isi</a></li>
+                <li><a href="prasyarat.html">Prasyarat</a></li>
+                <li><a href="aturan_umum.html">Aturan Umum</a></li>
+                <li>
+                    <button class="toggle-btn">+</button>
+                    <a href="#">Bab 1-5</a>
+                    <ul class="toc-sublist">
+                        <li><a href="bab1.html">Bab 1: Mengimpor Data CSV</a></li>
+                        <li><a href="bab2.html">Bab 2: Membuat Tabel</a></li>
+                        <li><a href="bab3.html">Bab 3: Memasukkan Data</a></li>
+                        <li><a href="bab4.html">Bab 4: Query SELECT Dasar</a></li>
+                        <li><a href="bab5.html">Bab 5: Memfilter Data</a></li>
+                    </ul>
+                </li>
+                <li><a href="bab6.html">Bab 6: Mengurutkan dan Membatasi Hasil</a></li>
+                <li><a href="bab7.html">Bab 7: Menggabungkan Tabel</a></li>
+                <li><a href="bab8.html">Bab 8: Agregasi Data</a></li>
+                <li><a href="bab9.html">Bab 9: Subquery</a></li>
+                <li><a href="bab10.html">Bab 10: Membuat View</a></li>
+                <li><a href="bab11.html">Bab 11: Mengelola Index</a></li>
+                <li><a href="bab12.html">Bab 12: Constraint</a></li>
+                <li><a href="bab13.html">Bab 13: Update dan Delete</a></li>
+                <li><a href="bab14.html">Bab 14: Stored Procedure</a></li>
+                <li><a href="bab15.html">Bab 15: Trigger</a></li>
+                <li><a href="bab16.html">Bab 16: Transaksi</a></li>
+                <li><a href="bab17.html">Bab 17: Optimasi Query</a></li>
+                <li><a href="bab18.html">Bab 18: Keamanan Database</a></li>
+                <li><a href="bab19.html" class="active">Bab 19: Backup Data</a></li>
+                <li><a href="bab20.html">Bab 20: Integrasi Aplikasi</a></li>
+                <li><a href="kesimpulan.html">Kesimpulan</a></li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <h1 class="content-title">Bab 19: Mencadangkan dan Memulihkan Data</h1>
+            <p class="content-text">
+                Pada bab ini, kita akan mempelajari cara mencadangkan (<code>pg_dump</code>) dan memulihkan data konservasi mangrove untuk melindungi dari kehilangan akibat kegagalan sistem atau serangan siber, memastikan keberlanjutan sistem blockchain.
+            </p>
+
+            <h2 class="content-subtitle">Deskripsi Kasus</h2>
+            <p class="content-text">
+                Organisasi ingin melindungi data konservasi mangrove dari kehilangan akibat kegagalan sistem atau serangan siber, memastikan jejak transaksi karbon dan data proyek tetap aman.
+            </p>
+
+            <h2 class="content-subtitle">Langkah untuk Pemula</h2>
+            <h3>1. Backup Database</h3>
+            <div class="code-block">
+                <pre>
+pg_dump -U postgres -d test_db > backup.sql
+                </pre>
+            </div>
+            <p class="content-text"><strong>Penjelasan Perintah:</strong></p>
+            <ul class="content-list">
+                <li><code>pg_dump -U postgres -d test_db</code> - Mengekspor seluruh database <code>test_db</code> menggunakan pengguna <code>postgres</code>.</li>
+                <li><code>> backup.sql</code> - Menyimpan output ke file <code>backup.sql</code>.</li>
+                <li><strong>Cara Running di VSCode</strong>: Buka terminal di VSCode (<code>Ctrl+``</code>), ketik perintah, pastikan <code>pg_dump</code> ada di PATH, lalu tekan Enter.</li>
+            </ul>
+            <p class="content-text"><strong>Output Contoh:</strong></p>
+            <p class="content-text">
+                File <code>backup.sql</code> dibuat di direktori kerja (misalnya, <code>C:\Users\YourUser\</code>).
+            </p>
+            <p class="content-text">
+                <strong>Analisis:</strong> File berisi perintah SQL untuk membuat ulang tabel dan data, melindungi data konservasi dan transaksi blockchain dari kehilangan.
+            </p>
+
+            <h2 class="content-subtitle">Untuk Pengguna Menengah</h2>
+            <h3>Backup Selektif</h3>
+            <div class="code-block">
+                <pre>
+pg_dump -U postgres -t mangrove_conservation_records test_db > mangrove_backup.sql
+                </pre>
+            </div>
+            <p class="content-text"><strong>Penjelasan Perintah:</strong></p>
+            <ul class="content-list">
+                <li><code>-t mangrove_conservation_records</code> - Menentukan tabel spesifik untuk dicadangkan.</li>
+                <li><code>> mangrove_backup.sql</code> - Menyimpan output ke file <code>mangrove_backup.sql</code>.</li>
+                <li><strong>Cara Running di VSCode</strong>: Jalankan di terminal VSCode seperti langkah pemula.</li>
+            </ul>
+            <p class="content-text"><strong>Output Contoh:</strong></p>
+            <p class="content-text">
+                File <code>mangrove_backup.sql</code> dibuat, berisi struktur dan data tabel <code>mangrove_conservation_records</code>.
+            </p>
+            <p class="content-text">
+                <strong>Analisis:</strong> Backup selektif menghemat ruang penyimpanan dengan fokus pada tabel kritis, memungkinkan pemulihan cepat data konservasi tanpa tabel lain, cocok untuk manajemen blockchain.
+            </p>
+
+            <h2 class="content-subtitle">Untuk Pengguna Tingkat Lanjutan</h2>
+            <h3>Otomatisasi Backup</h3>
+            <div class="code-block">
+                <pre>
+pg_dump -U postgres test_db | gzip > backup_$(date +%Y%m%d).sql.gz
+                </pre>
+            </div>
+            <p class="content-text"><strong>Penjelasan Perintah:</strong></p>
+            <ul class="content-list">
+                <li><code>pg_dump ... | gzip</code> - Mengekspor database dan mengompresi output dengan <code>gzip</code>.</li>
+                <li><code>$(date +%Y%m%d)</code> - Menambahkan tanggal ke nama file (misalnya, <code>backup_20250727.sql.gz</code>).</li>
+                <li><strong>Cara Running di VSCode</strong>: Tulis perintah dalam script <code>.bat</code> (Windows), jadwalkan dengan Task Scheduler:
+                    <pre>
+@echo off
+pg_dump -U postgres test_db | gzip > C:\backups\backup_%date:~10,4%%date:~4,2%%date:~7,2%.sql.gz
+                    </pre>
+                    Jalankan script di terminal VSCode untuk pengujian, lalu jadwalkan di Task Scheduler.
+                </li>
+            </ul>
+            <p class="content-text"><strong>Output Contoh:</strong></p>
+            <p class="content-text">
+                File terkompresi, misalnya <code>backup_20250727.sql.gz</code>, dibuat di direktori tertentu (misalnya, <code>C:\backups\</code>).
+            </p>
+            <p class="content-text">
+                <strong>Analisis:</strong> Backup otomatis harian memastikan data konservasi dan transaksi blockchain selalu terlindungi, dengan kompresi menghemat ruang, mendukung keberlanjutan sistem.
+            </p>
+
+            <a href="bab18.html" class="home-btn">← Kembali ke Bab 18</a>
+            <a href="bab20.html" class="home-btn">Lanjut ke Bab 20 →</a>
+        </main>
+
+        <aside class="sidebar-right">
+            <h3 class="tips-title">TIPS BAB 19</h3>
+            <div class="tips-item">
+                <h3>Simpan Backup di Lokasi Aman</h3>
+                <p>Simpan file backup di penyimpanan eksternal atau cloud untuk mencegah kehilangan akibat kegagalan perangkat keras.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Lakukan Backup Secara Berkala</h3>
+                <p>Jadwalkan backup harian atau mingguan untuk memastikan data selalu terlindungi dari kehilangan.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Gunakan Kompresi untuk Efisiensi</h3>
+                <p>Kompres file backup dengan <code>gzip</code> untuk menghemat ruang penyimpanan, terutama untuk database besar.</p>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </footer>
+</body>
+</html>
+```

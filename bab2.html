@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bab 2: Membuat Tabel untuk Data Konservasi Mangrove</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">TUTORIAL DATABASE MANGROVE</div>
+        <div class="clock" id="clock">Loading time...</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar-left">
+            <div class="toc-title">DAFTAR ISI</div>
+            <ul class="toc-list" id="tocList">
+                <!-- Same TOC as main.html -->
+            </ul>
+        </div>
+        
+        <div class="content">
+            <h1 class="content-title">Bab 2: Membuat Tabel untuk Data Konservasi Mangrove</h1>
+            
+            <div class="content-text">
+                <p>Pada bab ini, kita akan mempelajari cara membuat tabel permanen untuk menyimpan data konservasi mangrove dengan struktur yang tepat dan mendukung integritas data.</p>
+            </div>
+            
+            <div class="content-subtitle">Deskripsi Kasus</div>
+            <div class="content-text">
+                <p>Organisasi ingin menyimpan data konservasi mangrove dalam tabel permanen dengan struktur yang mendukung integritas data dan hubungan dengan tabel lain, seperti transaksi blockchain. Tabel ini akan menjadi dasar untuk analisis kredit karbon dan validasi proyek.</p>
+            </div>
+            
+            <div class="content-subtitle">Langkah untuk Pemula</div>
+            
+            <h3>1. Buat Tabel Permanen</h3>
+            <div class="code-block">
+CREATE TABLE mangrove_conservation_records (
+    conservation_id VARCHAR(50) PRIMARY KEY,
+    location VARCHAR(100),
+    area_ha NUMERIC,
+    carbon_credits INTEGER,
+    date_recorded DATE
+);
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan:</strong> Perintah ini membuat tabel permanen dengan:</p>
+                <ul class="content-list">
+                    <li><code>conservation_id</code> sebagai PRIMARY KEY untuk memastikan setiap proyek memiliki ID unik</li>
+                    <li>Tipe data yang sesuai untuk setiap kolom</li>
+                    <li>Struktur yang siap untuk dihubungkan dengan tabel transaksi blockchain</li>
+                </ul>
+                <p>Primary key akan mencegah duplikasi ID konservasi dan mempercepat pencarian berdasarkan ID.</p>
+            </div>
+            
+            <div class="content-subtitle">Untuk Pengguna Menengah</div>
+            
+            <h3>Tambah Constraint NOT NULL</h3>
+            <div class="code-block">
+CREATE TABLE blockchain_transactions (
+    transaction_id VARCHAR(50) PRIMARY KEY,
+    conservation_id VARCHAR(50) NOT NULL,
+    block_hash VARCHAR(50),
+    carbon_credits_transferred INTEGER,
+    transaction_date DATE
+);
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan:</strong> Tabel ini dibuat untuk menyimpan transaksi blockchain dengan:</p>
+                <ul class="content-list">
+                    <li><code>transaction_id</code> sebagai PRIMARY KEY</li>
+                    <li><code>conservation_id</code> dengan constraint NOT NULL untuk memastikan setiap transaksi terhubung ke proyek konservasi</li>
+                    <li>Kolom tambahan untuk informasi transaksi blockchain</li>
+                </ul>
+                <p>Constraint NOT NULL penting untuk memastikan data transaksi valid dan dapat dilacak ke proyek tertentu.</p>
+            </div>
+            
+            <div class="content-subtitle">Untuk Pengguna Tingkat Lanjut</div>
+            
+            <h3>Gunakan CREATE TABLE AS</h3>
+            <div class="code-block">
+CREATE TABLE mangrove_conservation_records AS
+SELECT * FROM temp_mangrove_records;
+
+ALTER TABLE mangrove_conservation_records 
+ADD PRIMARY KEY (conservation_id);
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan:</strong> Teknik ini berguna ketika:</p>
+                <ol class="content-list">
+                    <li>Anda ingin membuat tabel baru langsung dari data yang ada</li>
+                    <li>Struktur tabel sementara sudah sesuai dengan kebutuhan</li>
+                    <li>Anda ingin menghemat waktu dalam membuat struktur tabel</li>
+                </ol>
+                <p>Setelah tabel dibuat, kita menambahkan PRIMARY KEY untuk memastikan integritas data. Cara ini sangat efisien untuk dataset besar.</p>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <caption>Perbandingan Metode Pembuatan Tabel</caption>
+                    <thead>
+                        <tr>
+                            <th>Metode</th>
+                            <th>Keuntungan</th>
+                            <th>Kekurangan</th>
+                            <th>Penggunaan Ideal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CREATE TABLE</td>
+                            <td>Kontrol penuh atas struktur tabel</td>
+                            <td>Harus mendefinisikan semua kolom manual</td>
+                            <td>Tabel baru dengan struktur khusus</td>
+                        </tr>
+                        <tr>
+                            <td>CREATE TABLE AS</td>
+                            <td>Cepat, struktur mengikuti query</td>
+                            <td>Constraint harus ditambahkan setelahnya</td>
+                            <td>Membuat tabel dari data yang ada</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <a href="bab1.html" class="home-btn">← Kembali ke Bab 1</a>
+            <a href="bab3.html" class="home-btn">Lanjut ke Bab 3 →</a>
+        </div>
+        
+        <div class="sidebar-right">
+            <div class="tips-title">TIPS BAB 2</div>
+            <div class="tips-item">
+                <h3>Pilih Tipe Data yang Tepat</h3>
+                <p>Gunakan tipe data yang paling efisien untuk kebutuhan Anda. Misalnya, VARCHAR(50) untuk ID yang panjangnya konsisten, atau TEXT untuk deskripsi panjang.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Gunakan Nama Kolom yang Deskriptif</h3>
+                <p>Pilih nama kolom yang jelas dan konsisten, seperti 'conservation_id' bukan hanya 'id', untuk memudahkan pemeliharaan dan kerja tim.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Pertimbangkan Kebutuhan Masa Depan</h3>
+                <p>Rancang tabel dengan mempertimbangkan kebutuhan masa depan. Misalnya, tambahkan kolom 'created_at' untuk pelacakan waktu pembuatan record.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Documentasikan Struktur Tabel</h3>
+                <p>Buat dokumentasi untuk setiap tabel yang menjelaskan tujuan, struktur, dan relasinya dengan tabel lain dalam sistem.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

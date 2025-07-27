@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bab 4: Query SELECT Dasar</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">TUTORIAL DATABASE MANGROVE</div>
+        <div class="clock" id="clock">Loading time...</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar-left">
+            <div class="toc-title">DAFTAR ISI</div>
+            <ul class="toc-list" id="tocList">
+                <!-- Same TOC as main.html -->
+            </ul>
+        </div>
+        
+        <div class="content">
+            <h1 class="content-title">Bab 4: Query SELECT Dasar</h1>
+            
+            <div class="content-text">
+                <p>Bab ini memperkenalkan query SELECT dasar untuk mengambil data dari tabel konservasi mangrove, penting untuk analisis awal sebelum memproses data lebih lanjut dalam sistem blockchain.</p>
+            </div>
+            
+            <div class="content-subtitle">Deskripsi Kasus</div>
+            <div class="content-text">
+                <p>Organisasi ingin melihat data konservasi mangrove untuk laporan awal, seperti lokasi dan kredit karbon, untuk mengevaluasi proyek yang layak untuk transaksi blockchain.</p>
+            </div>
+            
+            <div class="content-subtitle">Langkah untuk Pemula</div>
+            
+            <h3>1. SELECT Sederhana</h3>
+            <div class="code-block">
+SELECT conservation_id, location, carbon_credits
+FROM mangrove_conservation_records;
+            </div>
+            <div class="content-text">
+                <p><strong>Output Contoh:</strong></p>
+                <div class="table-container">
+                    <table>
+                        <tr><th>conservation_id</th><th>location</th><th>carbon_credits</th></tr>
+                        <tr><td>C001</td><td>Aceh Jaya</td><td>250</td></tr>
+                        <tr><td>C002</td><td>Takalar</td><td>370</td></tr>
+                    </table>
+                </div>
+                <p><strong>Analisis:</strong> Query ini mengambil 3 kolom penting untuk laporan awal, memungkinkan analis melihat distribusi kredit karbon per lokasi.</p>
+            </div>
+            
+            <h3>2. Ambil Semua Kolom</h3>
+            <div class="code-block">
+SELECT * FROM mangrove_conservation_records;
+            </div>
+            <div class="content-text">
+                <p><strong>Kegunaan:</strong> Berguna untuk inspeksi cepat seluruh struktur data sebelum analisis lebih detail.</p>
+            </div>
+            
+            <div class="content-subtitle">Untuk Pengguna Menengah</div>
+            <h3>Gunakan Alias Kolom</h3>
+            <div class="code-block">
+SELECT 
+    conservation_id AS id, 
+    location AS situs, 
+    carbon_credits AS kredit
+FROM mangrove_conservation_records;
+            </div>
+            
+            <div class="content-subtitle">Untuk Pengguna Tingkat Lanjut</div>
+            <h3>Gunakan DISTINCT</h3>
+            <div class="code-block">
+SELECT DISTINCT location
+FROM mangrove_conservation_records;
+            </div>
+            
+            <a href="bab3.html" class="home-btn">← Bab 3</a>
+            <a href="bab5.html" class="home-btn">Bab 5 →</a>
+        </div>
+        
+        <div class="sidebar-right">
+            <div class="tips-title">TIPS BAB 4</div>
+            <div class="tips-item">
+                <h3>Hindari SELECT * dalam Produksi</h3>
+                <p>Selalu sebutkan kolom eksplisit dalam query produksi untuk efisiensi.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Gunakan LIMIT untuk Data Besar</h3>
+                <p>Tambahkan LIMIT 100 ketika eksplorasi dataset besar.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

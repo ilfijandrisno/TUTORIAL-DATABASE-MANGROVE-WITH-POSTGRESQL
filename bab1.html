@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bab 1: Mengimpor Data CSV ke PostgreSQL</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">TUTORIAL DATABASE MANGROVE</div>
+        <div class="clock" id="clock">Loading time...</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar-left">
+            <div class="toc-title">DAFTAR ISI</div>
+            <ul class="toc-list" id="tocList">
+                <!-- Same TOC as main.html -->
+            </ul>
+        </div>
+        
+        <div class="content">
+            <h1 class="content-title">Bab 1: Mengimpor Data CSV ke PostgreSQL</h1>
+            
+            <div class="content-text">
+                <p>Pada bab ini, kita akan mempelajari cara mengimpor data dari file CSV ke dalam database PostgreSQL. Data yang akan kita gunakan adalah data konservasi mangrove yang berisi informasi seperti ID konservasi, lokasi, luas area, kredit karbon, dan tanggal pencatatan.</p>
+            </div>
+            
+            <div class="content-subtitle">Deskripsi Kasus</div>
+            <div class="content-text">
+                <p>Sebuah organisasi konservasi mangrove di Indonesia ingin menyimpan data dari file CSV (<code>001Mangrove_Conservation_Records.csv</code>) ke database PostgreSQL untuk melacak proyek konservasi. Data ini akan digunakan untuk analisis transparansi blockchain, seperti memverifikasi kredit karbon yang diperdagangkan.</p>
+            </div>
+            
+            <div class="content-subtitle">Langkah untuk Pemula</div>
+            
+            <h3>1. Buat Tabel Sementara</h3>
+            <div class="code-block">
+CREATE TABLE temp_mangrove_records (
+    conservation_id VARCHAR(50),
+    location VARCHAR(100),
+    area_ha NUMERIC,
+    carbon_credits INTEGER,
+    date_recorded DATE
+);
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan:</strong> Perintah ini membuat tabel sementara dengan struktur yang sesuai dengan file CSV kita. Tipe data dipilih sesuai dengan jenis data yang akan diimpor:</p>
+                <ul class="content-list">
+                    <li><code>VARCHAR</code> untuk teks dengan panjang tertentu</li>
+                    <li><code>NUMERIC</code> untuk angka desimal (luas area dalam hektar)</li>
+                    <li><code>INTEGER</code> untuk bilangan bulat (kredit karbon)</li>
+                    <li><code>DATE</code> untuk tanggal pencatatan</li>
+                </ul>
+            </div>
+            
+            <h3>2. Impor Data CSV</h3>
+            <div class="code-block">
+\copy temp_mangrove_records FROM 'C:\data\001Mangrove_Conservation_Records.csv' DELIMITER ',' CSV HEADER;
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan:</strong> Perintah <code>\copy</code> digunakan untuk mengimpor data dari file CSV lokal ke dalam tabel yang telah kita buat. Opsi yang digunakan:</p>
+                <ul class="content-list">
+                    <li><code>DELIMITER ','</code> - Menentukan bahwa koma adalah pemisah kolom</li>
+                    <li><code>CSV HEADER</code> - Menunjukkan bahwa file memiliki baris header yang harus diabaikan</li>
+                </ul>
+                <p>Pastikan file CSV berada di lokasi yang ditentukan (<code>C:\data\</code> dalam contoh ini).</p>
+            </div>
+            
+            <h3>3. Verifikasi Data</h3>
+            <div class="code-block">
+SELECT * FROM temp_mangrove_records LIMIT 5;
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan:</strong> Perintah ini menampilkan 5 baris pertama dari tabel untuk memverifikasi bahwa data telah diimpor dengan benar. Output yang diharapkan:</p>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>conservation_id</th>
+                            <th>location</th>
+                            <th>area_ha</th>
+                            <th>carbon_credits</th>
+                            <th>date_recorded</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>C001</td>
+                            <td>Aceh Jaya</td>
+                            <td>50</td>
+                            <td>250</td>
+                            <td>2024-01-15</td>
+                        </tr>
+                        <tr>
+                            <td>C002</td>
+                            <td>Takalar</td>
+                            <td>75</td>
+                            <td>370</td>
+                            <td>2024-02-10</td>
+                        </tr>
+                        <tr>
+                            <td>C003</td>
+                            <td>Tanah Laut</td>
+                            <td>30</td>
+                            <td>150</td>
+                            <td>2024-03-05</td>
+                        </tr>
+                        <tr>
+                            <td>C004</td>
+                            <td>Lampung Barat</td>
+                            <td>60</td>
+                            <td>300</td>
+                            <td>2024-04-20</td>
+                        </tr>
+                        <tr>
+                            <td>C005</td>
+                            <td>Bengkulu Utara</td>
+                            <td>45</td>
+                            <td>220</td>
+                            <td>2024-05-12</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="content-subtitle">Untuk Pengguna Menengah</div>
+            
+            <h3>Impor dengan COPY</h3>
+            <div class="code-block">
+COPY temp_mangrove_records FROM 'C:\data\001Mangrove_Conservation_Records.csv' DELIMITER ',' CSV HEADER;
+            </div>
+            <div class="content-text">
+                <p><strong>Perbedaan dengan \copy:</strong> Perintah <code>COPY</code> adalah perintah server-side yang lebih cepat untuk impor data besar, tetapi memerlukan:</p>
+                <ul class="content-list">
+                    <li>Hak akses superuser</li>
+                    <li>File CSV harus berada di lokasi yang dapat diakses oleh server PostgreSQL</li>
+                </ul>
+            </div>
+            
+            <div class="content-subtitle">Untuk Pengguna Tingkat Lanjut</div>
+            
+            <h3>Otomatisasi Impor dengan Penanganan Error</h3>
+            <div class="code-block">
+DO $$
+BEGIN
+    IF EXISTS (SELECT FROM pg_tables WHERE tablename = 'temp_mangrove_records') THEN
+        TRUNCATE TABLE temp_mangrove_records;
+    END IF;
+    \copy temp_mangrove_records FROM 'C:\data\001Mangrove_Conservation_Records.csv' DELIMITER ',' CSV HEADER;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE NOTICE 'Error saat impor data: %', SQLERRM;
+END $$;
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan:</strong> Blok kode ini melakukan:</p>
+                <ol class="content-list">
+                    <li>Memeriksa apakah tabel sudah ada</li>
+                    <li>Jika ada, menghapus semua data yang ada (TRUNCATE)</li>
+                    <li>Mengimpor data baru</li>
+                    <li>Menangani error jika terjadi (misalnya file tidak ditemukan)</li>
+                </ol>
+                <p>Ini sangat berguna untuk pembaruan data berkala dalam sistem blockchain.</p>
+            </div>
+            
+            <a href="bab2.html" class="home-btn">Lanjut ke Bab 2 →</a>
+        </div>
+        
+        <div class="sidebar-right">
+            <div class="tips-title">TIPS BAB 1</div>
+            <div class="tips-item">
+                <h3>Persiapkan Struktur File CSV</h3>
+                <p>Pastikan file CSV Anda memiliki struktur yang konsisten sebelum diimpor. Header kolom harus sesuai dengan nama kolom di database, dan format data harus konsisten (misalnya format tanggal).</p>
+            </div>
+            <div class="tips-item">
+                <h3>Gunakan Tabel Sementara</h3>
+                <p>Mengimpor data ke tabel sementara terlebih dahulu memungkinkan Anda memeriksa dan membersihkan data sebelum memindahkannya ke tabel permanen, mengurangi risiko kesalahan.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Periksa Izin File</h3>
+                <p>Jika menggunakan perintah COPY, pastikan PostgreSQL memiliki izin untuk membaca file CSV. Pada Linux, Anda mungkin perlu mengubah pemilik file atau izin akses.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Handling Encoding</h3>
+                <p>Jika file CSV berisi karakter khusus (seperti aksara lokal), pastikan encoding file (biasanya UTF-8) sesuai dengan encoding database untuk menghindari masalah karakter yang rusak.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

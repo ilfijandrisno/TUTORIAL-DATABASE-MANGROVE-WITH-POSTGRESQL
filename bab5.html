@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bab 5: Memfilter Data dengan WHERE</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">TUTORIAL DATABASE MANGROVE</div>
+        <div class="clock" id="clock">Loading time...</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar-left">
+            <div class="toc-title">DAFTAR ISI</div>
+            <ul class="toc-list" id="tocList">
+                <li><a href="sambutan.html">Sambutan Motivasi</a></li>
+                <li><a href="pendahuluan.html">Pendahuluan</a></li>
+                <li><a href="daftar_isi.html">Daftar Isi</a></li>
+                <li><a href="prasyarat.html">Prasyarat</a></li>
+                <li><a href="aturan_umum.html">Aturan Umum</a></li>
+                
+                <li>
+                    <a href="javascript:void(0)" class="toc-item">Bab 1-5</a>
+                    <button class="toggle-btn">+</button>
+                    <ul class="toc-sublist">
+                        <li><a href="bab1.html">Bab 1: Mengimpor Data CSV</a></li>
+                        <li><a href="bab2.html">Bab 2: Membuat Tabel</a></li>
+                        <li><a href="bab3.html">Bab 3: Memasukkan Data</a></li>
+                        <li><a href="bab4.html">Bab 4: Query SELECT Dasar</a></li>
+                        <li><a href="bab5.html" class="active">Bab 5: Memfilter Data</a></li>
+                    </ul>
+                </li>
+                <!-- Item TOC lainnya -->
+            </ul>
+        </div>
+        
+        <div class="content">
+            <h1 class="content-title">Bab 5: Memfilter Data dengan WHERE</h1>
+            
+            <div class="content-text">
+                <p>Pada bab ini, kita akan mempelajari cara memfilter data konservasi mangrove berdasarkan kondisi tertentu menggunakan klausa WHERE, penting untuk analisis terfokus dalam sistem blockchain.</p>
+            </div>
+            
+            <div class="content-subtitle">Deskripsi Kasus</div>
+            <div class="content-text">
+                <p>Organisasi ingin memfilter proyek dengan luas area lebih dari 50 hektar untuk fokus pada proyek besar yang memiliki dampak signifikan dalam transaksi karbon blockchain.</p>
+            </div>
+            
+            <div class="content-subtitle">Langkah untuk Pemula</div>
+            
+            <h3>1. Filter Dasar</h3>
+            <div class="code-block">
+SELECT * FROM mangrove_conservation_records
+WHERE area_ha > 50;
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan Query:</strong></p>
+                <ul class="content-list">
+                    <li><code>SELECT *</code> - Memilih semua kolom dari tabel</li>
+                    <li><code>FROM mangrove_conservation_records</code> - Menentukan tabel sumber data</li>
+                    <li><code>WHERE area_ha > 50</code> - Kondisi filter untuk menampilkan hanya proyek dengan luas area > 50 hektar</li>
+                </ul>
+                
+                <p><strong>Output Contoh:</strong></p>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>conservation_id</th>
+                            <th>location</th>
+                            <th>area_ha</th>
+                            <th>carbon_credits</th>
+                        </tr>
+                        <tr>
+                            <td>C002</td>
+                            <td>Takalar</td>
+                            <td>75</td>
+                            <td>370</td>
+                        </tr>
+                        <tr>
+                            <td>C004</td>
+                            <td>Lampung Barat</td>
+                            <td>60</td>
+                            <td>300</td>
+                        </tr>
+                    </table>
+                </div>
+                <p><strong>Analisis:</strong> Query ini membantu mengidentifikasi proyek-proyek besar yang memiliki dampak lingkungan lebih signifikan dan potensi kredit karbon lebih tinggi.</p>
+            </div>
+            
+            <h3>2. Kondisi Ganda</h3>
+            <div class="code-block">
+SELECT * FROM mangrove_conservation_records
+WHERE area_ha > 50 AND carbon_credits > 300;
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan Query:</strong></p>
+                <ul class="content-list">
+                    <li><code>AND</code> - Operator logika untuk menggabungkan dua kondisi</li>
+                    <li>Hanya menampilkan baris yang memenuhi kedua kriteria: luas >50ha DAN kredit >300</li>
+                </ul>
+                
+                <p><strong>Output Contoh:</strong></p>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>conservation_id</th>
+                            <th>location</th>
+                            <th>area_ha</th>
+                            <th>carbon_credits</th>
+                        </tr>
+                        <tr>
+                            <td>C002</td>
+                            <td>Takalar</td>
+                            <td>75</td>
+                            <td>370</td>
+                        </tr>
+                        <tr>
+                            <td>C006</td>
+                            <td>Labuhan Batu</td>
+                            <td>80</td>
+                            <td>400</td>
+                        </tr>
+                    </table>
+                </div>
+                <p><strong>Analisis:</strong> Hasil ini sangat berguna untuk menentukan proyek prioritas dalam sistem blockchain yang memerlukan dampak ganda (luas area dan kredit karbon).</p>
+            </div>
+            
+            <div class="content-subtitle">Untuk Pengguna Menengah</div>
+            
+            <h3>Gunakan IN dan BETWEEN</h3>
+            <div class="code-block">
+SELECT * FROM mangrove_conservation_records
+WHERE location IN ('Aceh Jaya', 'Takalar')
+AND date_recorded BETWEEN '2024-01-01' AND '2024-12-31';
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan Query:</strong></p>
+                <ul class="content-list">
+                    <li><code>IN</code> - Memfilter lokasi yang termasuk dalam daftar tertentu</li>
+                    <li><code>BETWEEN</code> - Memfilter tanggal dalam rentang tertentu</li>
+                    <li>Gabungan kondisi untuk analisis regional dan temporal</li>
+                </ul>
+                
+                <p><strong>Kegunaan:</strong> Query ini membantu analisis proyek di wilayah tertentu dalam periode waktu tertentu untuk pelaporan blockchain triwulanan.</p>
+            </div>
+            
+            <div class="content-subtitle">Untuk Pengguna Tingkat Lanjut</div>
+            
+            <h3>Gunakan LIKE untuk Pencocokan Pola</h3>
+            <div class="code-block">
+SELECT * FROM mangrove_conservation_records
+WHERE location LIKE '%Jaya%';
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan Query:</strong></p>
+                <ul class="content-list">
+                    <li><code>LIKE</code> - Operator untuk pencocokan pola teks</li>
+                    <li><code>%</code> - Wildcard yang mewakili nol atau lebih karakter</li>
+                    <li>Mencari lokasi yang mengandung kata "Jaya"</li>
+                </ul>
+                
+                <p><strong>Output Contoh:</strong></p>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>conservation_id</th>
+                            <th>location</th>
+                            <th>area_ha</th>
+                        </tr>
+                        <tr>
+                            <td>C001</td>
+                            <td>Aceh Jaya</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td>C010</td>
+                            <td>Kubu Raya</td>
+                            <td>70</td>
+                        </tr>
+                    </table>
+                </div>
+                <p><strong>Analisis:</strong> Berguna untuk pengelompokan proyek berdasarkan pola nama lokasi, terutama untuk analisis regional dalam sistem blockchain.</p>
+            </div>
+            
+            <a href="bab4.html" class="home-btn">← Kembali ke Bab 4</a>
+            <a href="bab6.html" class="home-btn">Lanjut ke Bab 6 →</a>
+        </div>
+        
+        <div class="sidebar-right">
+            <div class="tips-title">TIPS BAB 5</div>
+            <div class="tips-item">
+                <h3>Indeks untuk Percepatan Filter</h3>
+                <p>Buat indeks pada kolom yang sering difilter (area_ha, carbon_credits) untuk meningkatkan performa query.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Hindari Fungsi pada Kolom WHERE</h3>
+                <p>Penulisan: <code>WHERE UPPER(location) = 'ACEH JAYA'</code> akan menghindari penggunaan indeks. Lebih baik: <code>WHERE location = 'Aceh Jaya'</code></p>
+            </div>
+            <div class="tips-item">
+                <h3>Urutan Kondisi WHERE</h3>
+                <p>Letakkan kondisi yang paling selektif pertama untuk optimasi performa, contoh: <code>WHERE carbon_credits > 300 AND area_ha > 50</code></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

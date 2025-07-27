@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Database Mangrove</title>
+    <style>
+        :root {
+            --dark-blue: #0a2e38;
+            --orange: #f39c12;
+            --light-blue: #3498db;
+            --white: #ffffff;
+            --gold: #f1c40f;
+            --gray: #ecf0f1;
+            --dark-gray: #7f8c8d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background-color: var(--dark-blue);
+            color: var(--white);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-title {
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            color: var(--gold);
+        }
+        
+        .clock {
+            font-size: 14px;
+            color: var(--white);
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        .logout-btn {
+            background-color: var(--orange);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .container {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+        
+        .sidebar-left {
+            width: 25%;
+            background-color: var(--gray);
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+        }
+        
+        .content {
+            width: 50%;
+            background-color: var(--white);
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .sidebar-right {
+            width: 25%;
+            background-color: var(--light-blue);
+            padding: 20px;
+            color: white;
+            overflow-y: auto;
+        }
+        
+        .toc-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+            border-bottom: 2px solid var(--orange);
+            padding-bottom: 5px;
+        }
+        
+        .toc-list {
+            list-style-type: none;
+        }
+        
+        .toc-list li {
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .toc-list a {
+            color: var(--dark-blue);
+            text-decoration: none;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .toc-list a:hover {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: var(--dark-blue);
+            transform: translateX(5px);
+        }
+        
+        .toc-list a.active {
+            background-color: var(--light-blue);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .toc-sublist {
+            list-style-type: none;
+            margin-left: 15px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .toc-sublist.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        .toggle-btn {
+            position: absolute;
+            right: 10px;
+            top: 8px;
+            background: none;
+            border: none;
+            color: var(--dark-blue);
+            cursor: pointer;
+            font-size: 16px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .toggle-btn:hover {
+            background-color: rgba(52, 152, 219, 0.2);
+        }
+        
+        .content-title {
+            font-size: 24px;
+            color: var(--dark-blue);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--orange);
+        }
+        
+        .content-text {
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        
+        .content-subtitle {
+            font-size: 18px;
+            color: var(--dark-blue);
+            margin: 25px 0 15px 0;
+            font-weight: bold;
+        }
+        
+        .content-list {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .content-list li {
+            margin-bottom: 10px;
+        }
+        
+        .code-block {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--light-blue);
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--dark-blue);
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        tr:hover {
+            background-color: #e6f7ff;
+        }
+        
+        .tips-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: white;
+            border-bottom: 2px solid var(--orange);
+            padding-bottom: 5px;
+        }
+        
+        .tips-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            animation: fadeIn 0.5s;
+        }
+        
+        .tips-item h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: var(--gold);
+        }
+        
+        .tips-item p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .home-btn {
+            display: inline-block;
+            background-color: var(--orange);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .home-btn:hover {
+            background-color: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .footer {
+            background-color: var(--dark-blue);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            margin-top: auto;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar-left, .content, .sidebar-right {
+                width: 100%;
+            }
+            
+            .sidebar-left {
+                order: 1;
+            }
+            
+            .content {
+                order: 2;
+            }
+            
+            .sidebar-right {
+                order: 3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">TUTORIAL DATABASE MANGROVE</div>
+        <div class="clock" id="clock">Loading time...</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar-left">
+            <div class="toc-title">DAFTAR ISI</div>
+            <ul class="toc-list" id="tocList">
+                <li><a href="sambutan.html">Sambutan Motivasi dari Arry HUTOMO</a></li>
+                <li><a href="pendahuluan.html">Pendahuluan</a></li>
+                <li><a href="daftar_isi.html">Daftar Isi</a></li>
+                <li><a href="prasyarat.html">Prasyarat</a></li>
+                <li><a href="aturan_umum.html">Aturan Umum PostgreSQL 17.5</a></li>
+                
+                <li>
+                    <a href="javascript:void(0)" class="toc-item">Bab 1-5</a>
+                    <button class="toggle-btn">+</button>
+                    <ul class="toc-sublist">
+                        <li><a href="bab1.html">Bab 1: Mengimpor Data CSV</a></li>
+                        <li><a href="bab2.html">Bab 2: Membuat Tabel</a></li>
+                        <li><a href="bab3.html">Bab 3: Memasukkan Data</a></li>
+                        <li><a href="bab4.html">Bab 4: Query SELECT Dasar</a></li>
+                        <li><a href="bab5.html">Bab 5: Memfilter Data</a></li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <a href="javascript:void(0)" class="toc-item">Bab 6-10</a>
+                    <button class="toggle-btn">+</button>
+                    <ul class="toc-sublist">
+                        <li><a href="bab6.html">Bab 6: Mengurutkan Data</a></li>
+                        <li><a href="bab7.html">Bab 7: Menggabungkan Tabel</a></li>
+                        <li><a href="bab8.html">Bab 8: Mengagregasi Data</a></li>
+                        <li><a href="bab9.html">Bab 9: Subquery</a></li>
+                        <li><a href="bab10.html">Bab 10: Membuat View</a></li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <a href="javascript:void(0)" class="toc-item">Bab 11-15</a>
+                    <button class="toggle-btn">+</button>
+                    <ul class="toc-sublist">
+                        <li><a href="bab11.html">Bab 11: Mengelola Index</a></li>
+                        <li><a href="bab12.html">Bab 12: Constraint</a></li>
+                        <li><a href="bab13.html">Bab 13: Memperbarui Data</a></li>
+                        <li><a href="bab14.html">Bab 14: Stored Procedure</a></li>
+                        <li><a href="bab15.html">Bab 15: Trigger</a></li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <a href="javascript:void(0)" class="toc-item">Bab 16-20</a>
+                    <button class="toggle-btn">+</button>
+                    <ul class="toc-sublist">
+                        <li><a href="bab16.html">Bab 16: Transaksi</a></li>
+                        <li><a href="bab17.html">Bab 17: Optimasi Query</a></li>
+                        <li><a href="bab18.html">Bab 18: Keamanan Database</a></li>
+                        <li><a href="bab19.html">Bab 19: Backup Data</a></li>
+                        <li><a href="bab20.html">Bab 20: Integrasi Aplikasi</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="kesimpulan.html">Kesimpulan</a></li>
+            </ul>
+        </div>
+        
+        <div class="content">
+            <h1 class="content-title">Selamat Datang di Tutorial PostgreSQL 17.5</h1>
+            <div class="content-text">
+                <p>Selamat datang di tutorial interaktif pengelolaan database konservasi mangrove menggunakan PostgreSQL 17.5. Tutorial ini dirancang untuk membantu Anda memahami konsep dasar hingga lanjutan dalam mengelola data konservasi mangrove dengan pendekatan blockchain untuk transparansi.</p>
+                
+                <p>Silakan pilih topik yang ingin Anda pelajari dari daftar isi di sebelah kiri. Untuk setiap bab, Anda akan menemukan penjelasan rinci di bagian tengah dan tips praktis di sebelah kanan.</p>
+                
+                <p>Tutorial ini mencakup 20 bab yang mencakup berbagai aspek pengelolaan database, dari impor data hingga integrasi dengan aplikasi eksternal.</p>
+            </div>
+            
+            <div class="content-subtitle">Fitur Utama Tutorial Ini:</div>
+            <ul class="content-list">
+                <li>Panduan langkah demi langkah untuk pemula hingga tingkat lanjut</li>
+                <li>Contoh kode SQL yang dapat langsung dicoba</li>
+                <li>Tips dan praktik terbaik untuk pengelolaan database</li>
+                <li>Penekanan pada penggunaan PostgreSQL untuk konservasi mangrove</li>
+                <li>Integrasi dengan konsep blockchain untuk transparansi</li>
+            </ul>
+            
+            <a href="pendahuluan.html" class="home-btn">Mulai Tutorial →</a>
+        </div>
+        
+        <div class="sidebar-right">
+            <div class="tips-title">TIPS CEPAT</div>
+            <div class="tips-item">
+                <h3>Gunakan VSCode dengan Ekstensi PostgreSQL</h3>
+                <p>Instal ekstensi PostgreSQL di VSCode untuk pengelolaan database yang lebih mudah dengan fitur seperti syntax highlighting, autocomplete, dan eksekusi query langsung dari editor.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Backup Database Secara Rutin</h3>
+                <p>Selalu buat backup database Anda secara berkala menggunakan perintah pg_dump untuk menghindari kehilangan data penting.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Pelajari EXPLAIN untuk Optimasi</h3>
+                <p>Gunakan perintah EXPLAIN sebelum menjalankan query kompleks untuk memahami bagaimana PostgreSQL mengeksekusi query Anda dan mengidentifikasi area untuk optimasi.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </div>
+
+    <script>
+        // Update clock
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            }).toUpperCase();
+            
+            const dateString = now.toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            document.getElementById('clock').textContent = `${timeString} WIB pada ${dateString}`;
+        }
+        
+        setInterval(updateClock, 1000);
+        updateClock();
+        
+        // Toggle sublists
+        const toggleButtons = document.querySelectorAll('.toggle-btn');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const sublist = this.nextElementSibling;
+                sublist.classList.toggle('show');
+                this.textContent = sublist.classList.contains('show') ? '-' : '+';
+            });
+        });
+        
+        // Set active link
+        const links = document.querySelectorAll('.toc-list a');
+        links.forEach(link => {
+            link.addEventListener('click', function() {
+                links.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Load content dynamically (would need AJAX in real implementation)
+                // For this example, we're using separate HTML files
+            });
+        });
+        
+        // Logout function
+        function logout() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

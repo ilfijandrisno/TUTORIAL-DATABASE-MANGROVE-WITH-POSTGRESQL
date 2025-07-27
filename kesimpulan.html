@@ -1,0 +1,147 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script>```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kesimpulan - Tutorial Mangrove</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h2 class="header-title">TUTORIAL DATABASE</h2>
+        <div id="clock" class="clock">10:52:00 AM WIB pada Minggu, Juli 27, 2025</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar-left">
+            <h3 class="toc-title">DAFTAR ISI</h3>
+            <ul class="toc-list">
+                <li><a href="sambutan.html">Sambutan Motivasi</a></li>
+                <li><a href="pendahuluan.html">Pendahuluan</a></li>
+                <li><a href="daftar_isi.html">Daftar Isi</a></li>
+                <li><a href="prasyarat.html">Prasyarat</a></li>
+                <li><a href="aturan_umum.html">Aturan Umum</a></li>
+                <li>
+                    <button class="toggle-btn">+</button>
+                    <a href="#">Bab 1-5</a>
+                    <ul class="toc-sublist">
+                        <li><a href="bab1.html">Bab 1: Mengimpor Data CSV</a></li>
+                        <li><a href="bab2.html">Bab 2: Membuat Tabel</a></li>
+                        <li><a href="bab3.html">Bab 3: Memasukkan Data</a></li>
+                        <li><a href="bab4.html">Bab 4: Query SELECT Dasar</a></li>
+                        <li><a href="bab5.html">Bab 5: Memfilter Data</a></li>
+                    </ul>
+                </li>
+                <li><a href="bab6.html">Bab 6: Mengurutkan dan Membatasi Hasil</a></li>
+                <li><a href="bab7.html">Bab 7: Menggabungkan Tabel</a></li>
+                <li><a href="bab8.html">Bab 8: Agregasi Data</a></li>
+                <li><a href="bab9.html">Bab 9: Subquery</a></li>
+                <li><a href="bab10.html">Bab 10: Membuat View</a></li>
+                <li><a href="bab11.html">Bab 11: Mengelola Index</a></li>
+                <li><a href="bab12.html">Bab 12: Constraint</a></li>
+                <li><a href="bab13.html">Bab 13: Update dan Delete</a></li>
+                <li><a href="bab14.html">Bab 14: Stored Procedure</a></li>
+                <li><a href="bab15.html">Bab 15: Trigger</a></li>
+                <li><a href="bab16.html">Bab 16: Transaksi</a></li>
+                <li><a href="bab17.html">Bab 17: Optimasi Query</a></li>
+                <li><a href="bab18.html">Bab 18: Keamanan Database</a></li>
+                <li><a href="bab19.html">Bab 19: Backup Data</a></li>
+                <li><a href="bab20.html">Bab 20: Integrasi Aplikasi</a></li>
+                <li><a href="kesimpulan.html" class="active">Kesimpulan</a></li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <h1 class="content-title">Kesimpulan</h1>
+            <p class="content-text">
+                Tutorial ini telah membahas pengelolaan database konservasi mangrove menggunakan PostgreSQL 17.5, mulai dari impor data CSV hingga integrasi dengan aplikasi eksternal, dengan fokus pada transparansi dan akuntabilitas sistem blockchain.
+            </p>
+            <p class="content-text">
+                Kita telah mempelajari teknik dasar seperti pembuatan tabel, query <code>SELECT</code>, dan pemfilteran data, serta teknik lanjutan seperti <code>JOIN</code>, subquery, view, indeks, constraint, stored procedure, trigger, dan transaksi. Bab-bab terakhir menekankan optimasi query, keamanan database, backup data, dan integrasi dengan aplikasi seperti dashboard blockchain, mendukung visi Indonesia Emas 2045 yang hijau dan berteknologi.
+            </p>
+            <p class="content-text">
+                Dengan keterampilan ini, Anda dapat membangun sistem database yang kuat untuk mendukung pelaporan real-time kredit karbon, meningkatkan kepercayaan investor, dan memastikan keberlanjutan lingkungan melalui teknologi blockchain.
+            </p>
+
+            <h2 class="content-subtitle">Langkah Selanjutnya</h2>
+            <ul class="content-list">
+                <li>Eksplorasi dokumentasi resmi PostgreSQL di <a href="https://www.postgresql.org/docs/" target="_blank">https://www.postgresql.org/docs/</a> untuk mempelajari fitur lanjutan.</li>
+                <li>Terapkan keterampilan dalam proyek nyata untuk mendukung konservasi mangrove dan pasar karbon blockchain.</li>
+                <li>Integrasikan database dengan aplikasi web atau mobile untuk visualisasi data yang lebih interaktif.</li>
+            </ul>
+
+            <h2 class="content-subtitle">Visi</h2>
+            <p class="content-text">
+                Dengan pengelolaan database yang efisien dan aman, kita dapat mendukung transparansi dalam pengelolaan kredit karbon mangrove, memperkuat posisi Indonesia sebagai pemimpin dalam konservasi berbasis teknologi menuju Indonesia Emas 2045.
+            </p>
+
+            <a href="bab20.html" class="home-btn">← Kembali ke Bab 20</a>
+            <a href="pendahuluan.html" class="home-btn">Kembali ke Pendahuluan</a>
+        </main>
+
+        <aside class="sidebar-right">
+            <h3 class="tips-title">TIPS KESIMPULAN</h3>
+            <div class="tips-item">
+                <h3>Eksplorasi Dokumentasi PostgreSQL</h3>
+                <p>Kunjungi <a href="https://www.postgresql.org/docs/" target="_blank">dokumentasi resmi PostgreSQL</a> untuk mempelajari fitur lanjutan seperti ekstensi dan tuning performa.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Terapkan dalam Proyek Nyata</h3>
+                <p>Gunakan keterampilan ini untuk membangun sistem pelaporan blockchain, meningkatkan transparansi dan kepercayaan.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Perbarui Pengetahuan</h3>
+                <p>Ikuti perkembangan PostgreSQL dan teknologi blockchain untuk menjaga relevansi solusi database Anda.</p>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </footer>
+</body>
+</html>
+```

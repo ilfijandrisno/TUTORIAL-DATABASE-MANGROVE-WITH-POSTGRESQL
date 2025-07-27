@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bab 3: Memasukkan Data dari File CSV</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">TUTORIAL DATABASE MANGROVE</div>
+        <div class="clock" id="clock">Loading time...</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar-left">
+            <div class="toc-title">DAFTAR ISI</div>
+            <ul class="toc-list" id="tocList">
+                <!-- Same TOC as main.html -->
+            </ul>
+        </div>
+        
+        <div class="content">
+            <h1 class="content-title">Bab 3: Memasukkan Data dari File CSV</h1>
+            
+            <div class="content-text">
+                <p>Pada bab ini, kita akan memindahkan data dari tabel sementara ke tabel permanen, dengan memperhatikan pembersihan data dan penanganan duplikasi.</p>
+            </div>
+            
+            <div class="content-subtitle">Deskripsi Kasus</div>
+            <div class="content-text">
+                <p>Data konservasi mangrove dari CSV perlu dipindahkan ke tabel permanen untuk analisis lanjutan, seperti pelacakan kredit karbon dalam sistem blockchain. Organisasi ingin memastikan data valid dan bebas duplikasi sebelum digunakan untuk laporan transparansi.</p>
+            </div>
+            
+            <div class="content-subtitle">Langkah untuk Pemula</div>
+            
+            <h3>1. Masukkan Data</h3>
+            <div class="code-block">
+INSERT INTO mangrove_conservation_records
+SELECT * FROM temp_mangrove_records;
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan:</strong> Perintah ini memindahkan semua data dari tabel sementara ke tabel permanen. Penting untuk memastikan:</p>
+                <ul class="content-list">
+                    <li>Struktur kedua tabel sama</li>
+                    <li>Data di tabel sementara sudah divalidasi</li>
+                    <li>Tidak ada constraint yang akan dilanggar (seperti duplikasi primary key)</li>
+                </ul>
+            </div>
+            
+            <h3>2. Verifikasi Data</h3>
+            <div class="code-block">
+SELECT COUNT(*) FROM mangrove_conservation_records;
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan:</strong> Perintah ini menghitung jumlah baris di tabel permanen untuk memverifikasi bahwa semua data telah terimpor dengan benar. Output yang diharapkan adalah jumlah baris yang sama dengan di tabel sementara (contoh: 20 baris).</p>
+            </div>
+            
+            <div class="content-subtitle">Untuk Pengguna Menengah</div>
+            
+            <h3>Bersihkan Data Sebelum Insert</h3>
+            <div class="code-block">
+INSERT INTO mangrove_conservation_records
+SELECT conservation_id, location, area_ha, carbon_credits, date_recorded
+FROM temp_mangrove_records
+WHERE area_ha > 0 AND carbon_credits IS NOT NULL;
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan:</strong> Teknik ini memastikan hanya data yang memenuhi kriteria tertentu yang dimasukkan:</p>
+                <ul class="content-list">
+                    <li><code>area_ha > 0</code> - Hanya proyek dengan luas area positif</li>
+                    <li><code>carbon_credits IS NOT NULL</code> - Hanya proyek dengan nilai kredit karbon yang valid</li>
+                </ul>
+                <p>Ini membantu menjaga kualitas data di tabel permanen untuk analisis blockchain yang akurat.</p>
+            </div>
+            
+            <div class="content-subtitle">Untuk Pengguna Tingkat Lanjut</div>
+            
+            <h3>Tangani Duplikasi dengan ON CONFLICT</h3>
+            <div class="code-block">
+INSERT INTO mangrove_conservation_records
+SELECT * FROM temp_mangrove_records
+ON CONFLICT (conservation_id) DO UPDATE
+SET location = EXCLUDED.location,
+    area_ha = EXCLUDED.area_ha,
+    carbon_credits = EXCLUDED.carbon_credits,
+    date_recorded = EXCLUDED.date_recorded;
+            </div>
+            <div class="content-text">
+                <p><strong>Penjelasan:</strong> Fitur UPSERT ini:</p>
+                <ol class="content-list">
+                    <li>Mencoba memasukkan data baru</li>
+                    <li>Jika terjadi konflik pada kolom conservation_id (data sudah ada)</li>
+                    <li>Memperbarui data yang ada dengan data baru</li>
+                </ol>
+                <p>Ini sangat berguna untuk pembaruan data berkala dalam sistem blockchain, di mana data mungkin perlu diperbarui tanpa menghapus record yang ada.</p>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <caption>Metode Insert Data dan Penggunaannya</caption>
+                    <thead>
+                        <tr>
+                            <th>Metode</th>
+                            <th>Keuntungan</th>
+                            <th>Risiko</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>INSERT sederhana</td>
+                            <td>Mudah digunakan</td>
+                            <td>Error jika ada duplikasi</td>
+                        </tr>
+                        <tr>
+                            <td>INSERT dengan filter</td>
+                            <td>Memastikan kualitas data</td>
+                            <td>Data tidak valid akan hilang</td>
+                        </tr>
+                        <tr>
+                            <td>ON CONFLICT</td>
+                            <td>Menangani duplikasi dengan elegan</td>
+                            <td>Kompleksitas lebih tinggi</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <a href="bab2.html" class="home-btn">← Kembali ke Bab 2</a>
+            <a href="bab4.html" class="home-btn">Lanjut ke Bab 4 →</a>
+        </div>
+        
+        <div class="sidebar-right">
+            <div class="tips-title">TIPS BAB 3</div>
+            <div class="tips-item">
+                <h3>Selalu Backup Sebelum Operasi Besar</h3>
+                <p>Sebelum melakukan operasi insert atau update besar, buat backup database atau setidaknya tabel yang akan dimodifikasi.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Gunakan Transaksi untuk Operasi Kritikal</h3>
+                <p>Bungkus operasi insert besar dalam transaksi (BEGIN; ... COMMIT;) sehingga Anda bisa rollback jika terjadi error.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Batch Insert untuk Data Besar</h3>
+                <p>Untuk dataset sangat besar, pertimbangkan untuk membagi insert menjadi batch untuk menghindari timeout atau penggunaan memori berlebihan.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Monitor Performance</h3>
+                <p>Gunakan EXPLAIN ANALYZE untuk memantau performa query insert dan mengidentifikasi bottleneck.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

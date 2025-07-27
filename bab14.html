@@ -1,0 +1,236 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script>```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bab 14 - Tutorial Mangrove</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h2 class="header-title">TUTORIAL DATABASE</h2>
+        <div id="clock" class="clock">09:55:00 AM WIB pada Minggu, Juli 27, 2025</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar-left">
+            <h3 class="toc-title">DAFTAR ISI</h3>
+            <ul class="toc-list">
+                <li><a href="sambutan.html">Sambutan Motivasi</a></li>
+                <li><a href="pendahuluan.html">Pendahuluan</a></li>
+                <li><a href="daftar_isi.html">Daftar Isi</a></li>
+                <li><a href="prasyarat.html">Prasyarat</a></li>
+                <li><a href="aturan_umum.html">Aturan Umum</a></li>
+                <li>
+                    <button class="toggle-btn">+</button>
+                    <a href="#">Bab 1-5</a>
+                    <ul class="toc-sublist">
+                        <li><a href="bab1.html">Bab 1: Mengimpor Data CSV</a></li>
+                        <li><a href="bab2.html">Bab 2: Membuat Tabel</a></li>
+                        <li><a href="bab3.html">Bab 3: Memasukkan Data</a></li>
+                        <li><a href="bab4.html">Bab 4: Query SELECT Dasar</a></li>
+                        <li><a href="bab5.html">Bab 5: Memfilter Data</a></li>
+                    </ul>
+                </li>
+                <li><a href="bab6.html">Bab 6: Mengurutkan dan Membatasi Hasil</a></li>
+                <li><a href="bab7.html">Bab 7: Menggabungkan Tabel</a></li>
+                <li><a href="bab8.html">Bab 8: Agregasi Data</a></li>
+                <li><a href="bab9.html">Bab 9: Subquery</a></li>
+                <li><a href="bab10.html">Bab 10: Membuat View</a></li>
+                <li><a href="bab11.html">Bab 11: Mengelola Index</a></li>
+                <li><a href="bab12.html">Bab 12: Constraint</a></li>
+                <li><a href="bab13.html">Bab 13: Update dan Delete</a></li>
+                <li><a href="bab14.html" class="active">Bab 14: Stored Procedure</a></li>
+                <li><a href="bab15.html">Bab 15: Trigger</a></li>
+                <li><a href="bab16.html">Bab 16: Transaksi</a></li>
+                <li><a href="bab17.html">Bab 17: Optimasi Query</a></li>
+                <li><a href="bab18.html">Bab 18: Keamanan Database</a></li>
+                <li><a href="bab19.html">Bab 19: Backup Data</a></li>
+                <li><a href="bab20.html">Bab 20: Integrasi Aplikasi</a></li>
+                <li><a href="kesimpulan.html">Kesimpulan</a></li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <h1 class="content-title">Bab 14: Membuat Stored Procedure untuk Otomatisasi</h1>
+            <p class="content-text">
+                Pada bab ini, kita akan mempelajari cara membuat <code>STORED PROCEDURE</code> untuk mengotomatiskan tugas berulang pada data konservasi mangrove, seperti pembaruan kredit karbon, untuk mengurangi kesalahan manual dan meningkatkan efisiensi operasional dalam sistem blockchain.
+            </p>
+
+            <h2 class="content-subtitle">Deskripsi Kasus</h2>
+            <p class="content-text">
+                Organisasi ingin mengotomatiskan pembaruan kredit karbon berdasarkan transaksi blockchain untuk memastikan data selalu akurat tanpa intervensi manual yang rawan kesalahan.
+            </p>
+
+            <h2 class="content-subtitle">Langkah untuk Pemula</h2>
+            <h3>1. Buat Procedure</h3>
+            <div class="code-block">
+                <pre>
+CREATE PROCEDURE update_credits(id VARCHAR(50), amount INTEGER)
+LANGUAGE SQL
+AS $$
+UPDATE mangrove_conservation_records
+SET carbon_credits = carbon_credits + amount
+WHERE conservation_id = id;
+$$;
+                </pre>
+            </div>
+            <p class="content-text"><strong>Penjelasan Query:</strong></p>
+            <ul class="content-list">
+                <li><code>CREATE PROCEDURE update_credits</code> - Mendefinisikan nama prosedur dengan parameter <code>id</code> dan <code>amount</code>.</li>
+                <li><code>LANGUAGE SQL</code> - Menentukan bahasa pemrograman prosedur.</li>
+                <li><code>UPDATE ... SET ... WHERE</code> - Memperbarui kredit karbon untuk proyek tertentu.</li>
+            </ul>
+            <p class="content-text"><strong>Output Contoh:</strong></p>
+            <p class="content-text">
+                Prosedur <code>update_credits</code> dibuat, dapat dipanggil dengan:
+            </p>
+            <div class="code-block">
+                <pre>
+CALL update_credits('C001', 100);
+                </pre>
+            </div>
+            <p class="content-text">
+                Kredit karbon untuk <code>C001</code> bertambah 100, misalnya dari 250 menjadi 350.
+            </p>
+            <p class="content-text">
+                <strong>Analisis:</strong> Prosedur ini mengotomatiskan pembaruan kredit, mengurangi risiko kesalahan manual dalam sistem blockchain.
+            </p>
+
+            <h2 class="content-subtitle">Untuk Pengguna Menengah</h2>
+            <h3>Tambah Penanganan Error</h3>
+            <div class="code-block">
+                <pre>
+CREATE OR REPLACE PROCEDURE update_credits(id VARCHAR(50), amount INTEGER)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF amount < 0 THEN
+        RAISE EXCEPTION 'Jumlah tidak boleh negatif';
+    END IF;
+    UPDATE mangrove_conservation_records
+    SET carbon_credits = carbon_credits + amount
+    WHERE conservation_id = id;
+END;
+$$;
+                </pre>
+            </div>
+            <p class="content-text"><strong>Penjelasan Query:</strong></p>
+            <ul class="content-list">
+                <li><code>CREATE OR REPLACE PROCEDURE</code> - Mengganti prosedur jika sudah ada.</li>
+                <li><code>LANGUAGE plpgsql</code> - Menggunakan PL/pgSQL untuk logika kompleks seperti penanganan error.</li>
+                <li><code>IF amount < 0 THEN RAISE EXCEPTION</code> - Memeriksa input negatif dan menghentikan eksekusi jika tidak valid.</li>
+            </ul>
+            <p class="content-text"><strong>Output Contoh:</strong></p>
+            <p class="content-text">
+                Prosedur diperbarui; jika dipanggil dengan <code>CALL update_credits('C001', -100)</code>, menghasilkan error: "Jumlah tidak boleh negatif".
+            </p>
+            <p class="content-text">
+                <strong>Analisis:</strong> Penanganan error meningkatkan keandalan otomatisasi, memastikan data kredit valid untuk blockchain.
+            </p>
+
+            <h2 class="content-subtitle">Untuk Pengguna Tingkat Lanjutan</h2>
+            <h3>Dynamic SQL</h3>
+            <div class="code-block">
+                <pre>
+CREATE OR REPLACE PROCEDURE dynamic_update_credits(table_name VARCHAR, id VARCHAR(50), amount INTEGER)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    EXECUTE format('UPDATE %I SET carbon_credits = carbon_credits + %L WHERE conservation_id = %L', table_name, amount, id);
+END;
+$$;
+                </pre>
+            </div>
+            <p class="content-text"><strong>Penjelasan Query:</strong></p>
+            <ul class="content-list">
+                <li><code>EXECUTE format(...)</code> - Membangun query dinamis dengan nama tabel sebagai parameter.</li>
+                <li><code>%I</code> - Mengamankan nama tabel dari SQL injection.</li>
+                <li><code>%L</code> - Mengamankan nilai literal untuk <code>amount</code> dan <code>id</code>.</li>
+            </ul>
+            <p class="content-text"><strong>Output Contoh:</strong></p>
+            <p class="content-text">
+                Prosedur <code>dynamic_update_credits</code> dibuat, dapat dipanggil dengan:
+            </p>
+            <div class="code-block">
+                <pre>
+CALL dynamic_update_credits('mangrove_conservation_records', 'C001', 100);
+                </pre>
+            </div>
+            <p class="content-text">
+                Kredit karbon untuk <code>C001</code> bertambah 100.
+            </p>
+            <p class="content-text">
+                <strong>Analisis:</strong> Dynamic SQL memungkinkan fleksibilitas untuk memperbarui tabel yang berbeda, cocok untuk sistem blockchain kompleks.
+            </p>
+
+            <a href="bab13.html" class="home-btn">← Kembali ke Bab 13</a>
+            <a href="bab15.html" class="home-btn">Lanjut ke Bab 15 →</a>
+        </main>
+
+        <aside class="sidebar-right">
+            <h3 class="tips-title">TIPS BAB 14</h3>
+            <div class="tips-item">
+                <h3>Gunakan Stored Procedure untuk Otomatisasi</h3>
+                <p>Simpan tugas berulang seperti pembaruan kredit dalam stored procedure untuk efisiensi dan konsistensi.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Tangani Error dengan PL/pgSQL</h3>
+                <p>Gunakan PL/pgSQL untuk menambahkan logika seperti penanganan error, memastikan input valid sebelum eksekusi.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Amankan Dynamic SQL</h3>
+                <p>Gunakan <code>format</code> dengan <code>%I</code> dan <code>%L</code> untuk mencegah SQL injection dalam dynamic SQL.</p>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </footer>
+</body>
+</html>
+```

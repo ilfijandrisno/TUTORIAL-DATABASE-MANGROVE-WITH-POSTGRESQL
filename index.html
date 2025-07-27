@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Tutorial Database Mangrove</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0a2e38 0%, #1a5276 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            width: 400px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .login-title {
+            margin-bottom: 30px;
+        }
+        .login-title h1 {
+            font-size: 24px;
+            margin: 0;
+            color: #f39c12;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .login-title h2 {
+            font-size: 18px;
+            margin: 10px 0 0 0;
+            color: #3498db;
+        }
+        .login-title p {
+            font-size: 14px;
+            margin-top: 20px;
+            color: #ecf0f1;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #ecf0f1;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 5px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .input-group input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+        }
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: none;
+            background: linear-gradient(to right, #f39c12, #e67e22);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .login-button:hover {
+            background: linear-gradient(to right, #e67e22, #d35400);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .copyright {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #bdc3c7;
+        }
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-title">
+            <h1>TUTORIAL PENGELOLAAN DATABASE:</h1>
+            <h2>Konservasi Mangrove dengan PostgreSQL 17.5</h2>
+            <p>MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved</p>
+        </div>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Masukkan username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Masukkan password" required>
+            </div>
+            <div class="error-message" id="errorMessage">
+                Username atau password salah!
+            </div>
+            <button type="submit" class="login-button">Login</button>
+        </form>
+        <div class="copyright">
+            MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'mangrove' && password === 'arry1234') {
+                window.location.href = 'main.html';
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('errorMessage').style.display = 'none';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

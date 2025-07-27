@@ -1,0 +1,259 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script>```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bab 17 - Tutorial Mangrove</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h2 class="header-title">TUTORIAL DATABASE</h2>
+        <div id="clock" class="clock">10:24:00 AM WIB pada Minggu, Juli 27, 2025</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar-left">
+            <h3 class="toc-title">DAFTAR ISI</h3>
+            <ul class="toc-list">
+                <li><a href="sambutan.html">Sambutan Motivasi</a></li>
+                <li><a href="pendahuluan.html">Pendahuluan</a></li>
+                <li><a href="daftar_isi.html">Daftar Isi</a></li>
+                <li><a href="prasyarat.html">Prasyarat</a></li>
+                <li><a href="aturan_umum.html">Aturan Umum</a></li>
+                <li>
+                    <button class="toggle-btn">+</button>
+                    <a href="#">Bab 1-5</a>
+                    <ul class="toc-sublist">
+                        <li><a href="bab1.html">Bab 1: Mengimpor Data CSV</a></li>
+                        <li><a href="bab2.html">Bab 2: Membuat Tabel</a></li>
+                        <li><a href="bab3.html">Bab 3: Memasukkan Data</a></li>
+                        <li><a href="bab4.html">Bab 4: Query SELECT Dasar</a></li>
+                        <li><a href="bab5.html">Bab 5: Memfilter Data</a></li>
+                    </ul>
+                </li>
+                <li><a href="bab6.html">Bab 6: Mengurutkan dan Membatasi Hasil</a></li>
+                <li><a href="bab7.html">Bab 7: Menggabungkan Tabel</a></li>
+                <li><a href="bab8.html">Bab 8: Agregasi Data</a></li>
+                <li><a href="bab9.html">Bab 9: Subquery</a></li>
+                <li><a href="bab10.html">Bab 10: Membuat View</a></li>
+                <li><a href="bab11.html">Bab 11: Mengelola Index</a></li>
+                <li><a href="bab12.html">Bab 12: Constraint</a></li>
+                <li><a href="bab13.html">Bab 13: Update dan Delete</a></li>
+                <li><a href="bab14.html">Bab 14: Stored Procedure</a></li>
+                <li><a href="bab15.html">Bab 15: Trigger</a></li>
+                <li><a href="bab16.html">Bab 16: Transaksi</a></li>
+                <li><a href="bab17.html" class="active">Bab 17: Optimasi Query</a></li>
+                <li><a href="bab18.html">Bab 18: Keamanan Database</a></li>
+                <li><a href="bab19.html">Bab 19: Backup Data</a></li>
+                <li><a href="bab20.html">Bab 20: Integrasi Aplikasi</a></li>
+                <li><a href="kesimpulan.html">Kesimpulan</a></li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <h1 class="content-title">Bab 17: Mengoptimalkan Query dengan EXPLAIN</h1>
+            <p class="content-text">
+                Pada bab ini, kita akan mempelajari cara menganalisis performa query menggunakan <code>EXPLAIN</code> untuk mengidentifikasi bottleneck, seperti pemindaian tabel penuh (<code>Seq Scan</code>), dan mengoptimalkan query dengan indeks untuk mempercepat eksekusi, penting untuk pelaporan real-time dalam sistem blockchain.
+            </p>
+
+            <h2 class="content-subtitle">Deskripsi Kasus</h2>
+            <p class="content-text">
+                Organisasi ingin memastikan query untuk pelaporan blockchain berjalan cepat, terutama untuk menyajikan laporan real-time kepada investor tentang kredit karbon dan status proyek.
+            </p>
+
+            <h2 class="content-subtitle">Langkah untuk Pemula</h2>
+            <h3>1. Jalankan EXPLAIN</h3>
+            <div class="code-block">
+                <pre>
+EXPLAIN SELECT * FROM mangrove_conservation_records
+WHERE carbon_credits > 300;
+                </pre>
+            </div>
+            <p class="content-text"><strong>Penjelasan Query:</strong></p>
+            <ul class="content-list">
+                <li><code>EXPLAIN</code> - Menampilkan rencana eksekusi query tanpa menjalankannya.</li>
+                <li><code>SELECT * ... WHERE carbon_credits > 300</code> - Query yang dianalisis untuk memeriksa performa.</li>
+                <li><strong>Cara Running di VSCode</strong>: Buka <strong>PostgreSQL Explorer</strong>, klik kanan database <code>test_db</code>, pilih <strong>New Query</strong>, ketik query, jalankan dengan <code>Ctrl+Shift+E</code>.</li>
+            </ul>
+            <p class="content-text"><strong>Output Contoh:</strong></p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rencana Eksekusi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Seq Scan on mangrove_conservation_records (cost=0.00..2.20 rows=6 width=164)</td>
+                        </tr>
+                        <tr>
+                            <td>Filter: (carbon_credits > 300)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="content-text">
+                <strong>Analisis:</strong> Output menunjukkan <code>Seq Scan</code> (pemindaian tabel penuh), yang lambat untuk tabel besar. Ini mengindikasikan perlunya indeks pada kolom <code>carbon_credits</code> untuk mempercepat query, terutama untuk pelaporan blockchain real-time.
+            </p>
+
+            <h2 class="content-subtitle">Untuk Pengguna Menengah</h2>
+            <h3>EXPLAIN ANALYZE</h3>
+            <div class="code-block">
+                <pre>
+EXPLAIN ANALYZE SELECT m.conservation_id, m.location, t.carbon_credits_transferred
+FROM mangrove_conservation_records m
+JOIN blockchain_transactions t ON m.conservation_id = t.conservation_id;
+                </pre>
+            </div>
+            <p class="content-text"><strong>Penjelasan Query:</strong></p>
+            <ul class="content-list">
+                <li><code>EXPLAIN ANALYZE</code> - Menjalankan query dan menampilkan rencana eksekusi beserta waktu aktual.</li>
+                <li><code>JOIN ... ON</code> - Menggabungkan tabel untuk analisis performa join.</li>
+                <li><strong>Cara Running di VSCode</strong>: Jalankan di jendela query dengan <code>Ctrl+Shift+E</code>.</li>
+            </ul>
+            <p class="content-text"><strong>Output Contoh:</strong></p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rencana Eksekusi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Hash Join (cost=1.20..3.40 rows=20 width=164) (actual time=0.015..0.025 rows=20 loops=1)</td>
+                        </tr>
+                        <tr>
+                            <td>Hash Cond: (m.conservation_id = t.conservation_id)</td>
+                        </tr>
+                        <tr>
+                            <td>-&gt; Seq Scan on mangrove_conservation_records m (cost=0.00..2.00 rows=20 width=132) (actual time=0.005..0.010 rows=20 loops=1)</td>
+                        </tr>
+                        <tr>
+                            <td>-&gt; Hash (cost=1.00..1.00 rows=20 width=32) (actual time=0.010..0.010 rows=20 loops=1)</td>
+                        </tr>
+                        <tr>
+                            <td>-&gt; Seq Scan on blockchain_transactions t (cost=0.00..1.00 rows=20 width=32) (actual time=0.005..0.005 rows=20 loops=1)</td>
+                        </tr>
+                        <tr>
+                            <td>Planning Time: 0.100 ms</td>
+                        </tr>
+                        <tr>
+                            <td>Execution Time: 0.050 ms</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="content-text">
+                <strong>Analisis:</strong> Output menunjukkan <code>Hash Join</code> dengan waktu cepat (0.050 ms), tetapi <code>Seq Scan</code> pada kedua tabel mengindikasikan potensi optimalisasi dengan indeks pada <code>conservation_id</code> untuk mendukung join yang lebih cepat dalam laporan blockchain.
+            </p>
+
+            <h2 class="content-subtitle">Untuk Pengguna Tingkat Lanjutan</h2>
+            <h3>Optimasi dengan Indeks</h3>
+            <div class="code-block">
+                <pre>
+CREATE INDEX idx_carbon_credits ON mangrove_conservation_records(carbon_credits);
+EXPLAIN SELECT * FROM mangrove_conservation_records
+WHERE carbon_credits > 300;
+                </pre>
+            </div>
+            <p class="content-text"><strong>Penjelasan Query:</strong></p>
+            <ul class="content-list">
+                <li><code>CREATE INDEX idx_carbon_credits</code> - Membuat indeks pada kolom <code>carbon_credits</code>.</li>
+                <li><code>EXPLAIN</code> - Memeriksa rencana eksekusi setelah indeks dibuat.</li>
+                <li><strong>Cara Running di VSCode</strong>: Jalankan kedua query berurutan di jendela query dengan <code>Ctrl+Shift+E</code>.</li>
+            </ul>
+            <p class="content-text"><strong>Output Contoh:</strong></p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rencana Eksekusi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Index Scan using idx_carbon_credits on mangrove_conservation_records (cost=0.15..1.50 rows=6 width=164)</td>
+                        </tr>
+                        <tr>
+                            <td>Index Cond: (carbon_credits > 300)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="content-text">
+                <strong>Analisis:</strong> Perubahan dari <code>Seq Scan</code> ke <code>Index Scan</code> menunjukkan indeks digunakan, mengurangi waktu eksekusi. Ini memastikan laporan blockchain real-time berjalan cepat, bahkan untuk dataset besar, meningkatkan pengalaman investor.
+            </p>
+
+            <a href="bab16.html" class="home-btn">← Kembali ke Bab 16</a>
+            <a href="bab18.html" class="home-btn">Lanjut ke Bab 18 →</a>
+        </main>
+
+        <aside class="sidebar-right">
+            <h3 class="tips-title">TIPS BAB 17</h3>
+            <div class="tips-item">
+                <h3>Gunakan EXPLAIN untuk Debugging</h3>
+                <p>Analisis query dengan <code>EXPLAIN</code> untuk mengidentifikasi bottleneck seperti <code>Seq Scan</code> pada tabel besar.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Optimasi dengan Indeks</h3>
+                <p>Buat indeks pada kolom yang sering digunakan di <code>WHERE</code> atau <code>JOIN</code> untuk mengurangi waktu eksekusi.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Gunakan EXPLAIN ANALYZE dengan Hati-hati</h3>
+                <p>Hindari <code>EXPLAIN ANALYZE</code> pada query yang memodifikasi data, karena query akan dijalankan sepenuhnya.</p>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </footer>
+</body>
+</html>
+```

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendahuluan</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">TUTORIAL DATABASE MANGROVE</div>
+        <div class="clock" id="clock">Loading time...</div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar-left">
+            <div class="toc-title">DAFTAR ISI</div>
+            <ul class="toc-list" id="tocList">
+                <!-- Same TOC as main.html -->
+            </ul>
+        </div>
+        
+        <div class="content">
+            <h1 class="content-title">Pendahuluan</h1>
+            
+            <div class="content-text">
+                <p>Tutorial ini melanjutkan panduan instalasi PostgreSQL 17.5, berfokus pada pembuatan dan pengelolaan database konservasi mangrove menggunakan data dari file CSV (<code>001Mangrove_Conservation_Records.csv</code>, dll.).</p>
+                
+                <div class="content-subtitle">Tujuan Tutorial</div>
+                <ol class="content-list">
+                    <li>Membekali peserta dengan keterampilan manajemen database PostgreSQL untuk konservasi mangrove</li>
+                    <li>Memahami integrasi sistem database dengan teknologi blockchain</li>
+                    <li>Menyediakan panduan langkah demi langkah dari dasar hingga lanjutan</li>
+                </ol>
+                
+                <div class="content-subtitle">Cakupan Materi</div>
+                <div class="table-container">
+                    <table>
+                        <tr><th>Level</th><th>Topik</th><th>Contoh Aplikasi</th></tr>
+                        <tr>
+                            <td>Pemula</td>
+                            <td>Query dasar, impor data</td>
+                            <td>Laporan konservasi sederhana</td>
+                        </tr>
+                        <tr>
+                            <td>Menengah</td>
+                            <td>Join tabel, agregasi</td>
+                            <td>Analisis kredit karbon</td>
+                        </tr>
+                        <tr>
+                            <td>Lanjutan</td>
+                            <td>Optimasi, integrasi</td>
+                            <td>Sistem blockchain terdesentralisasi</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="content-subtitle">Struktur Pembelajaran</div>
+                <p>Tutorial terdiri dari 20 bab yang dirancang modular:</p>
+                <div style="display: flex; justify-content: center; margin: 20px 0;">
+                    <img src="learning-path.png" alt="Alur Pembelajaran" style="max-width: 80%; border: 1px solid #ddd;">
+                </div>
+            </div>
+            
+            <a href="sambutan.html" class="home-btn">← Sambutan</a>
+            <a href="daftar_isi.html" class="home-btn">Daftar Isi →</a>
+        </div>
+        
+        <div class="sidebar-right">
+            <div class="tips-title">PANDUAN PENGGUNAAN</div>
+            <div class="tips-item">
+                <h3>Target Pembaca</h3>
+                <p>Dari administrator database pemula hingga pengembang sistem blockchain.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Pendekatan Belajar</h3>
+                <p>Gabungan teori dan praktik dengan contoh kasus nyata.</p>
+            </div>
+            <div class="tips-item">
+                <h3>Tools Pendukung</h3>
+                <p>Gunakan VSCode dengan ekstensi PostgreSQL untuk pengalaman terbaik.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
