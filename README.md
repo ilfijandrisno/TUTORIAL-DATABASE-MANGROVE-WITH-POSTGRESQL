@@ -6,7 +6,8 @@ ___
 ## About This Project
 This repository contains PostgreSQL database tutorials and tasks for mangrove conservation data management.
 
-USERNAME : mangrove
-PASSWORD : arry1234
+___
+USERNAME : mangrove  
+PASSWORD : arry1234  
 
-MANGROVE BLOCKCHAIN INDONESIA © 2025 ARRY HUTOMO. All Rights Reserved
+**MANGROVE BLOCKCHAIN INDONESIA** © 2025 **ARRY HUTOMO**. All Rights Reserved
