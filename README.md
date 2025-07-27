@@ -16,8 +16,5 @@ ___
 # PostgreSQL Database Tutorial for Mangrove Conservation
 
 ## 🌐 Live Demo
-Access the interactive tutorial here:  
-[TUTORIAL DATABASE MANGROVE WITH POSTGRESQL](https://arry-hutomo.github.io/TUTORIAL-DATABASE-MANGROVE-WITH-POSTGRESQL/)
 
-## Alternative Formats
 [![Open in Browser](https://img.shields.io/badge/🌐_Open_Tutorial-Web_App-blue?style=for-the-badge)](https://arry-hutomo.github.io/TUTORIAL-DATABASE-MANGROVE-WITH-POSTGRESQL/)
