@@ -17,4 +17,4 @@ ___
 
 ## 🌐 Live Demo
 
-[![Open in Browser](https://img.shields.io/badge/🌐_Open_Tutorial-Web_App-blue?style=for-the-badge)](https://arry-hutomo.github.io/TUTORIAL-DATABASE-MANGROVE-WITH-POSTGRESQL/)
+[![Open in Browser](https://img.shields.io/badge/🌐_Open_Tutorial-Web_App-blue?style=for-the-badge)](https://ilfijandrisno.github.io/TUTORIAL-DATABASE-MANGROVE-WITH-POSTGRESQL/)
