@@ -115,5 +115,40 @@ SELECT conservation_id, location FROM mangrove_conservation_records;
     </div>
 
     <script src="script.js"></script>
+
+    <script>
+    (async () => {
+      const html = await fetch('toc.html').then(r => r.text());
+      document.getElementById('tocList').innerHTML = html;
+
+      // highlight halaman aktif
+      const currentFile = location.pathname.split('/').pop() || 'main.html';
+      document.querySelectorAll('#tocList a[href]').forEach(link => {
+        if (link.getAttribute('href') === currentFile) {
+          link.classList.add('active');
+          const li  = link.closest('li');
+          const sub = li && li.querySelector('.toc-sublist');
+          const btn = li && li.querySelector('.toggle-btn');
+          if (sub) sub.classList.add('show');
+          if (btn) btn.textContent = '−';
+        }
+      });
+
+      // toggle yang robust (tidak tergantung urutan elemen)
+      ['.toggle-btn', '.toc-item'].forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+          el.addEventListener('click', (e) => {
+            if (el.classList.contains('toc-item')) e.preventDefault();
+            const li  = el.closest('li');
+            const sub = li && li.querySelector('.toc-sublist');
+            if (!sub) return;
+            sub.classList.toggle('show');
+            const btn = li.querySelector('.toggle-btn');
+            if (btn) btn.textContent = sub.classList.contains('show') ? '−' : '+';
+          });
+        });
+      });
+    })();
+    </script>
 </body>
 </html>

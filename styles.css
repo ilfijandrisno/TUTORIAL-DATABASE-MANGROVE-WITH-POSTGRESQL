@@ -134,13 +134,16 @@ body {
   max-height: 0;
   overflow: hidden;
   transition: all 0.3s ease;
+  display: none;
 }
 
 .toc-sublist.show {
   max-height: 500px;
+  display: block;
 }
 
 .toggle-btn {
+  z-index: 2;
   position: absolute;
   right: 10px;
   top: 8px;
@@ -156,6 +159,11 @@ body {
   justify-content: center;
   border-radius: 50%;
   transition: all 0.3s;
+}
+
+.toc-item { 
+  display: inline-block; 
+  cursor: pointer; 
 }
 
 .toggle-btn:hover {

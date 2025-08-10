@@ -65,18 +65,6 @@ function setActiveLink() {
     });
 }
 
-// Initialize Toggle Buttons
-function initToggleButtons() {
-    const toggleButtons = document.querySelectorAll('.toggle-btn');
-    toggleButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const sublist = this.nextElementSibling;
-            sublist.classList.toggle('show');
-            this.textContent = sublist.classList.contains('show') ? '-' : '+';
-        });
-    });
-}
-
 // Login Form Handling
 function initLoginForm() {
     const loginForm = document.getElementById('loginForm');
@@ -106,36 +94,8 @@ function logout() {
 
 // Dynamic Content Loading (for SPA-like behavior)
 function loadContent(url) {
-    if (url === currentPage) return;
-    
-    fetch(url)
-        .then(response => response.text())
-        .then(html => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            
-            // Update content area
-            const newContent = doc.querySelector('.content').innerHTML;
-            document.querySelector('.content').innerHTML = newContent;
-            
-            // Update tips sidebar
-            const newTips = doc.querySelector('.sidebar-right').innerHTML;
-            document.querySelector('.sidebar-right').innerHTML = newTips;
-            
-            // Update current page
-            currentPage = url;
-            setActiveLink();
-            
-            // Scroll to top
-            window.scrollTo(0, 0);
-            
-            // Update browser history
-            history.pushState(null, null, url);
-        })
-        .catch(err => {
-            console.error('Failed to load content:', err);
-            window.location.href = url;
-        });
+    if (url.startsWith('javascript:')) return;   // abaikan javascript:void(0)
+    window.location.href = url;                  // navigasi biasa
 }
 
 // Handle back/forward navigation
@@ -147,13 +107,13 @@ window.addEventListener('popstate', function() {
 });
 
 // Initialize event delegation for navigation
-document.addEventListener('click', function(e) {
-    if (e.target.matches('.toc-list a') || e.target.matches('.home-btn')) {
-        e.preventDefault();
-        const url = e.target.getAttribute('href');
-        loadContent(url);
-    }
-});
+//document.addEventListener('click', function(e) {
+//    if (e.target.matches('.toc-list a') || e.target.matches('.home-btn')) {
+//        e.preventDefault();
+//        const url = e.target.getAttribute('href');
+//        loadContent(url);
+//    }
+//});
 
 // MathJax Configuration (if needed)
 if (typeof MathJax !== 'undefined') {
